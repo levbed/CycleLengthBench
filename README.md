@@ -89,10 +89,10 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-The `inspect` command uses only Python's standard library. Model evaluation,
-the synthetic demo, and plotting require the dependencies above. You can also
-run them without activating the environment by replacing `python` with
-`.venv/bin/python` in the commands below.
+The `inspect` command uses only Python's standard library. Model evaluation and
+plotting require the dependencies above. You can also run them without
+activating the environment by replacing `python` with `.venv/bin/python` in the
+commands below.
 
 ## Reproduction
 
@@ -101,19 +101,10 @@ Replace `/path/to/mcphases` with the extracted local dataset directory.
 ```bash
 python run_benchmark.py inspect --data-dir /path/to/mcphases
 python run_benchmark.py evaluate --data-dir /path/to/mcphases
-python run_benchmark.py --output-dir results/demo demo \
-  --data-file examples/synthetic_data.csv
 python -m unittest discover -s tests -v
 ```
 
 Global options such as `--output-dir` must appear before the subcommand.
-The synthetic fixture is deterministic and intentionally contains a known
-recoverable source-cycle signal. It validates the pipeline; its model ranking is
-not evidence about real physiology. Regenerate it with:
-
-```bash
-python examples/generate_synthetic_data.py --output examples/synthetic_data.csv
-```
 
 ## Outputs
 

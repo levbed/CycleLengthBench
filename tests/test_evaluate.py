@@ -1,15 +1,42 @@
 from __future__ import annotations
 
 import unittest
-from pathlib import Path
 
-from src.data import build_cycle_examples, load_combined_csv, safe_ordinal
+from src.data import safe_ordinal
 from src.evaluate import DEFAULT_RIDGE_ALPHAS, evaluate_feature_table, participant_bootstrap_mae
-from src.features import build_feature_table, feature_tracks
+from src.features import HISTORY_FEATURES, FeatureTable, feature_tracks
 
 
-ROOT = Path(__file__).resolve().parents[1]
-SYNTHETIC = ROOT / "examples" / "synthetic_data.csv"
+def _evaluation_table() -> FeatureTable:
+    rows = []
+    for participant_index in range(6):
+        for cycle_index in range(2):
+            previous = 25.0 + participant_index + cycle_index
+            rows.append(
+                {
+                    "example_id": f"row-{participant_index}-{cycle_index}",
+                    "participant_id": f"P{participant_index}",
+                    "study_interval": "test",
+                    "source_start_day": cycle_index * 30,
+                    "target_start_day": (cycle_index + 1) * 30,
+                    "target_end_day": (cycle_index + 2) * 30,
+                    "target_cycle_length": previous + (participant_index % 2),
+                    "history_previous_cycle_length": previous,
+                    "history_mean_cycle_length": previous - 0.5,
+                    "history_median_cycle_length": previous - 0.5,
+                    "history_std_cycle_length": 1.0 + cycle_index,
+                    "history_prior_cycle_count": 2.0 + cycle_index,
+                }
+            )
+    return FeatureTable(
+        rows=rows,
+        history_features=HISTORY_FEATURES.copy(),
+        wearable_features=[],
+        hormone_features=[],
+        symptom_features=[],
+        metabolic_stress_features=[],
+        variables_used={},
+    )
 
 
 class EvaluationTests(unittest.TestCase):
@@ -21,10 +48,7 @@ class EvaluationTests(unittest.TestCase):
         self.assertIsNone(safe_ordinal("unknown"))
 
     def test_nested_ridge_records_only_prespecified_alphas(self) -> None:
-        loaded = load_combined_csv(SYNTHETIC)
-        examples = build_cycle_examples(loaded.flow_rows)
-        feature_table = build_feature_table(examples, loaded.measurements)
-        _, fold_scores, _ = evaluate_feature_table(feature_table, bootstrap_replicates=100)
+        _, fold_scores, _ = evaluate_feature_table(_evaluation_table(), bootstrap_replicates=100)
         selected = {
             float(row["selected_alpha"])
             for row in fold_scores
@@ -33,10 +57,11 @@ class EvaluationTests(unittest.TestCase):
         self.assertTrue(selected)
         self.assertTrue(selected.issubset(set(DEFAULT_RIDGE_ALPHAS)))
 
-    def test_demo_exercises_optional_multimodal_tracks(self) -> None:
-        loaded = load_combined_csv(SYNTHETIC)
-        examples = build_cycle_examples(loaded.flow_rows)
-        tracks = feature_tracks(build_feature_table(examples, loaded.measurements))
+    def test_optional_multimodal_tracks_are_included_when_available(self) -> None:
+        table = _evaluation_table()
+        table.symptom_features = ["selfreport_stress_mean"]
+        table.metabolic_stress_features = ["glucose_mean"]
+        tracks = feature_tracks(table)
         self.assertIn("history_plus_symptoms", tracks)
         self.assertIn("history_plus_glucose_stress", tracks)
 

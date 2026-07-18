@@ -9,7 +9,6 @@ from src.data import (
     DEFAULT_MIN_CYCLE_LENGTH,
     build_cycle_examples,
     count_by_participant,
-    load_combined_csv,
     load_mcphases_data,
     summarize_loaded_data,
 )
@@ -33,8 +32,8 @@ def _print_summary(summary: dict) -> None:
         print("  - none")
 
 
-def _load_and_build(args: argparse.Namespace, demo: bool = False):
-    loaded = load_combined_csv(args.data_file) if demo else load_mcphases_data(args.data_dir)
+def _load_and_build(args: argparse.Namespace):
+    loaded = load_mcphases_data(args.data_dir)
     examples = build_cycle_examples(
         loaded.flow_rows,
         min_cycle_length=args.min_cycle_length,
@@ -46,7 +45,7 @@ def _load_and_build(args: argparse.Namespace, demo: bool = False):
 
 
 def inspect_command(args: argparse.Namespace) -> None:
-    _, examples, _, summary = _load_and_build(args, demo=False)
+    _, examples, _, summary = _load_and_build(args)
     _print_summary(summary)
     counts = count_by_participant(examples)
     if counts:
@@ -54,7 +53,7 @@ def inspect_command(args: argparse.Namespace) -> None:
         print(f"  min={min(counts.values())}, median={sorted(counts.values())[len(counts)//2]}, max={max(counts.values())}")
 
 
-def evaluate_command(args: argparse.Namespace, demo: bool = False) -> None:
+def evaluate_command(args: argparse.Namespace) -> None:
     from src.evaluate import evaluate_feature_table, write_csv
     from src.plots import (
         save_delta_mae_vs_history,
@@ -63,7 +62,7 @@ def evaluate_command(args: argparse.Namespace, demo: bool = False) -> None:
         save_target_distribution,
     )
 
-    _, examples, feature_table, summary = _load_and_build(args, demo=demo)
+    _, examples, feature_table, summary = _load_and_build(args)
     _print_summary(summary)
     print(f"Feature variables used: {feature_table.variables_used}")
     scores, fold_scores, predictions = evaluate_feature_table(feature_table)
@@ -125,11 +124,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     evaluate = subparsers.add_parser("evaluate", help="Run participant-disjoint benchmark on local mcPHASES data.")
     evaluate.add_argument("--data-dir", required=True)
-    evaluate.set_defaults(func=lambda args: evaluate_command(args, demo=False))
-
-    demo = subparsers.add_parser("demo", help="Run benchmark on the included synthetic CSV.")
-    demo.add_argument("--data-file", required=True)
-    demo.set_defaults(func=lambda args: evaluate_command(args, demo=True))
+    evaluate.set_defaults(func=evaluate_command)
 
     summarize = subparsers.add_parser(
         "summarize",
