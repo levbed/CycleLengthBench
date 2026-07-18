@@ -1,0 +1,55 @@
+id,study_interval,day_in_study,phase,flow_volume,lh,estrogen,pdg,fsh,sleep_minutes,resting_hr,steps,active_minutes
+P01,synthetic,1,Menstrual,Moderate,4.0,90,2.0,5.0,410,62,7200,54
+P01,synthetic,7,Follicular,Not at all,6.0,140,2.5,4.5,430,61,8300,61
+P01,synthetic,29,Menstrual,Moderate,4.2,92,2.1,5.2,405,63,7600,52
+P01,synthetic,35,Follicular,Not at all,6.5,150,2.7,4.3,440,61,8500,64
+P01,synthetic,57,Menstrual,Moderate,4.4,94,2.2,5.1,415,62,7800,53
+P01,synthetic,63,Follicular,Not at all,6.8,155,2.9,4.2,435,60,8700,66
+P01,synthetic,86,Menstrual,Moderate,4.6,95,2.1,5.0,420,62,7900,55
+P01,synthetic,92,Follicular,Not at all,7.0,158,3.0,4.1,438,60,8900,67
+P01,synthetic,114,Menstrual,Moderate,4.5,93,2.0,5.0,418,62,7800,54
+P02,synthetic,1,Menstrual,Moderate,5.0,100,2.2,5.0,390,66,6200,42
+P02,synthetic,8,Follicular,Not at all,7.5,160,2.8,4.4,405,65,7000,49
+P02,synthetic,30,Menstrual,Moderate,5.2,102,2.1,5.1,392,67,6400,43
+P02,synthetic,37,Follicular,Not at all,7.8,165,2.9,4.3,408,65,7150,50
+P02,synthetic,59,Menstrual,Moderate,5.3,104,2.2,5.2,395,66,6500,44
+P02,synthetic,66,Follicular,Not at all,8.0,168,3.0,4.2,410,64,7300,51
+P02,synthetic,87,Menstrual,Moderate,5.1,101,2.0,5.1,388,67,6350,43
+P02,synthetic,94,Follicular,Not at all,7.7,163,2.8,4.3,406,65,7100,50
+P02,synthetic,116,Menstrual,Moderate,5.2,103,2.1,5.0,391,66,6450,44
+P03,synthetic,1,Menstrual,Moderate,3.5,85,1.9,5.8,455,58,9100,72
+P03,synthetic,6,Follicular,Not at all,5.8,135,2.6,5.0,470,57,9800,80
+P03,synthetic,27,Menstrual,Moderate,3.6,86,2.0,5.7,450,59,9000,70
+P03,synthetic,33,Follicular,Not at all,6.0,138,2.7,4.9,468,57,9900,82
+P03,synthetic,55,Menstrual,Moderate,3.7,88,2.1,5.6,452,58,9200,73
+P03,synthetic,61,Follicular,Not at all,6.2,142,2.8,4.8,472,56,10100,84
+P03,synthetic,82,Menstrual,Moderate,3.8,89,2.0,5.7,456,59,9150,71
+P03,synthetic,88,Follicular,Not at all,6.1,140,2.7,4.9,469,57,9950,81
+P03,synthetic,110,Menstrual,Moderate,3.7,87,2.0,5.8,454,58,9200,72
+P04,synthetic,1,Menstrual,Moderate,6.2,112,2.6,4.8,370,70,5200,35
+P04,synthetic,9,Follicular,Not at all,8.5,175,3.4,4.0,385,69,6000,41
+P04,synthetic,32,Menstrual,Moderate,6.3,115,2.5,4.9,372,71,5300,36
+P04,synthetic,40,Follicular,Not at all,8.8,180,3.5,3.9,388,69,6150,42
+P04,synthetic,62,Menstrual,Moderate,6.4,116,2.7,4.7,374,70,5400,37
+P04,synthetic,70,Follicular,Not at all,9.0,182,3.6,3.8,390,68,6250,43
+P04,synthetic,93,Menstrual,Moderate,6.5,117,2.6,4.8,371,71,5350,36
+P04,synthetic,101,Follicular,Not at all,8.9,181,3.5,3.9,386,69,6100,42
+P04,synthetic,123,Menstrual,Moderate,6.4,116,2.6,4.8,373,70,5400,37
+P05,synthetic,1,Menstrual,Moderate,4.8,98,2.4,5.4,425,64,7600,58
+P05,synthetic,7,Follicular,Not at all,7.0,152,3.1,4.7,442,63,8500,65
+P05,synthetic,28,Menstrual,Moderate,4.9,99,2.3,5.5,426,65,7700,59
+P05,synthetic,34,Follicular,Not at all,7.2,155,3.2,4.6,445,63,8600,66
+P05,synthetic,56,Menstrual,Moderate,5.0,101,2.5,5.3,428,64,7800,60
+P05,synthetic,62,Follicular,Not at all,7.4,158,3.3,4.5,448,62,8700,68
+P05,synthetic,83,Menstrual,Moderate,4.9,100,2.4,5.4,427,65,7750,59
+P05,synthetic,89,Follicular,Not at all,7.3,156,3.2,4.6,446,63,8650,67
+P05,synthetic,111,Menstrual,Moderate,5.0,101,2.4,5.4,429,64,7800,60
+P06,synthetic,1,Menstrual,Moderate,5.6,108,2.3,5.1,400,68,6500,46
+P06,synthetic,8,Follicular,Not at all,8.0,170,3.0,4.5,415,67,7350,54
+P06,synthetic,31,Menstrual,Moderate,5.7,109,2.4,5.0,402,69,6600,47
+P06,synthetic,38,Follicular,Not at all,8.2,172,3.1,4.4,418,67,7450,55
+P06,synthetic,60,Menstrual,Moderate,5.8,110,2.5,5.0,404,68,6700,48
+P06,synthetic,67,Follicular,Not at all,8.4,174,3.2,4.3,420,66,7550,56
+P06,synthetic,90,Menstrual,Moderate,5.7,109,2.4,5.1,401,69,6650,47
+P06,synthetic,97,Follicular,Not at all,8.3,173,3.1,4.4,417,67,7500,55
+P06,synthetic,119,Menstrual,Moderate,5.8,110,2.4,5.1,403,68,6700,48

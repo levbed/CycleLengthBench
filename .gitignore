@@ -1,0 +1,8 @@
+mcphases-a-dataset-of-physiological-hormonal-and-self-reported-events-and-symptoms-for-menstrual-health-tracking-with-wearables-*/
+results/*.csv
+results/*.png
+results/*.json
+.DS_Store
+__pycache__/
+.pytest_cache/
+*.pyc
