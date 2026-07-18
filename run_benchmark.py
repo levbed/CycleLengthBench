@@ -13,9 +13,9 @@ from src.data import (
     load_mcphases_data,
     summarize_loaded_data,
 )
-from src.evaluate import evaluate_feature_table, write_csv
 from src.features import build_feature_table
-from src.plots import save_mae_by_track, save_predicted_vs_observed
+from src.openai_report import DEFAULT_OPENAI_MODEL, load_aggregate_summary, summarize_with_openai, write_openai_outputs
+from src.report import build_benchmark_summary, write_json, write_markdown_report
 
 
 def _print_summary(summary: dict) -> None:
@@ -55,6 +55,14 @@ def inspect_command(args: argparse.Namespace) -> None:
 
 
 def evaluate_command(args: argparse.Namespace, demo: bool = False) -> None:
+    from src.evaluate import evaluate_feature_table, write_csv
+    from src.plots import (
+        save_delta_mae_vs_history,
+        save_mae_by_track,
+        save_predicted_vs_observed,
+        save_target_distribution,
+    )
+
     _, examples, feature_table, summary = _load_and_build(args, demo=demo)
     _print_summary(summary)
     print(f"Feature variables used: {feature_table.variables_used}")
@@ -64,14 +72,44 @@ def evaluate_command(args: argparse.Namespace, demo: bool = False) -> None:
     write_csv(output_dir / "fold_scores.csv", fold_scores)
     write_csv(output_dir / "predictions.csv", predictions)
     save_mae_by_track(output_dir / "mae_by_track.png", scores)
+    save_delta_mae_vs_history(output_dir / "mae_delta_vs_history.png", scores)
     save_predicted_vs_observed(output_dir / "predicted_vs_observed.png", predictions)
+    save_target_distribution(
+        output_dir / "target_distribution.png",
+        [float(row["target_cycle_length"]) for row in feature_table.rows],
+    )
+    aggregate_summary = build_benchmark_summary(summary, feature_table, scores, fold_scores)
+    write_json(output_dir / "benchmark_summary.json", aggregate_summary)
+    write_markdown_report(output_dir / "benchmark_report.md", aggregate_summary)
     print(f"Saved results to {output_dir.resolve()}")
     print("Scores:")
     for row in scores:
         print(
             f"  - {row['track']}: MAE={float(row['mae']):.3f}, "
-            f"RMSE={float(row['rmse']):.3f}, within_7_days={float(row['within_7_days_pct']):.1f}%"
+            f"95% CI=({float(row['mae_ci_low']):.3f}, {float(row['mae_ci_high']):.3f}), "
+            f"delta_vs_history={float(row['delta_mae_vs_history']):+.3f}, "
+            f"within_7_days={float(row['within_7_days_pct']):.1f}%"
         )
+
+
+def summarize_command(args: argparse.Namespace) -> None:
+    results_dir = Path(args.results_dir)
+    payload = load_aggregate_summary(results_dir / "benchmark_summary.json")
+    try:
+        result = summarize_with_openai(payload, model=args.model)
+    except Exception as exc:
+        raise RuntimeError(f"OpenAI summary failed: {exc}") from exc
+    write_openai_outputs(
+        results_dir / "openai_report.json",
+        results_dir / "openai_report.md",
+        result,
+    )
+    print(f"Saved aggregate-only OpenAI report to {(results_dir / 'openai_report.md').resolve()}")
+    print(f"Model: {result['model']}")
+    if result.get("request_id"):
+        print(f"Request ID: {result['request_id']}")
+    if result.get("usage"):
+        print(f"Usage: {result['usage']}")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -92,6 +130,14 @@ def build_parser() -> argparse.ArgumentParser:
     demo = subparsers.add_parser("demo", help="Run benchmark on the included synthetic CSV.")
     demo.add_argument("--data-file", required=True)
     demo.set_defaults(func=lambda args: evaluate_command(args, demo=True))
+
+    summarize = subparsers.add_parser(
+        "summarize",
+        help="Use OpenAI to interpret aggregate benchmark_summary.json only.",
+    )
+    summarize.add_argument("--results-dir", default="results")
+    summarize.add_argument("--model", default=DEFAULT_OPENAI_MODEL)
+    summarize.set_defaults(func=summarize_command)
     return parser
 
 
@@ -100,7 +146,13 @@ def main() -> None:
     args = parser.parse_args()
     try:
         args.func(args)
-    except (FileNotFoundError, NotADirectoryError, ValueError) as exc:
+    except ModuleNotFoundError as exc:
+        parser.error(
+            f"Missing dependency '{exc.name}'. Activate the project environment with "
+            "'source .venv/bin/activate', or install dependencies with "
+            "'python3 -m pip install -r requirements.txt'."
+        )
+    except (FileNotFoundError, NotADirectoryError, RuntimeError, ValueError) as exc:
         parser.error(str(exc))
 
 

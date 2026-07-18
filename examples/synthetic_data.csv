@@ -1,55 +1,235 @@
-id,study_interval,day_in_study,phase,flow_volume,lh,estrogen,pdg,fsh,sleep_minutes,resting_hr,steps,active_minutes
-P01,synthetic,1,Menstrual,Moderate,4.0,90,2.0,5.0,410,62,7200,54
-P01,synthetic,7,Follicular,Not at all,6.0,140,2.5,4.5,430,61,8300,61
-P01,synthetic,29,Menstrual,Moderate,4.2,92,2.1,5.2,405,63,7600,52
-P01,synthetic,35,Follicular,Not at all,6.5,150,2.7,4.3,440,61,8500,64
-P01,synthetic,57,Menstrual,Moderate,4.4,94,2.2,5.1,415,62,7800,53
-P01,synthetic,63,Follicular,Not at all,6.8,155,2.9,4.2,435,60,8700,66
-P01,synthetic,86,Menstrual,Moderate,4.6,95,2.1,5.0,420,62,7900,55
-P01,synthetic,92,Follicular,Not at all,7.0,158,3.0,4.1,438,60,8900,67
-P01,synthetic,114,Menstrual,Moderate,4.5,93,2.0,5.0,418,62,7800,54
-P02,synthetic,1,Menstrual,Moderate,5.0,100,2.2,5.0,390,66,6200,42
-P02,synthetic,8,Follicular,Not at all,7.5,160,2.8,4.4,405,65,7000,49
-P02,synthetic,30,Menstrual,Moderate,5.2,102,2.1,5.1,392,67,6400,43
-P02,synthetic,37,Follicular,Not at all,7.8,165,2.9,4.3,408,65,7150,50
-P02,synthetic,59,Menstrual,Moderate,5.3,104,2.2,5.2,395,66,6500,44
-P02,synthetic,66,Follicular,Not at all,8.0,168,3.0,4.2,410,64,7300,51
-P02,synthetic,87,Menstrual,Moderate,5.1,101,2.0,5.1,388,67,6350,43
-P02,synthetic,94,Follicular,Not at all,7.7,163,2.8,4.3,406,65,7100,50
-P02,synthetic,116,Menstrual,Moderate,5.2,103,2.1,5.0,391,66,6450,44
-P03,synthetic,1,Menstrual,Moderate,3.5,85,1.9,5.8,455,58,9100,72
-P03,synthetic,6,Follicular,Not at all,5.8,135,2.6,5.0,470,57,9800,80
-P03,synthetic,27,Menstrual,Moderate,3.6,86,2.0,5.7,450,59,9000,70
-P03,synthetic,33,Follicular,Not at all,6.0,138,2.7,4.9,468,57,9900,82
-P03,synthetic,55,Menstrual,Moderate,3.7,88,2.1,5.6,452,58,9200,73
-P03,synthetic,61,Follicular,Not at all,6.2,142,2.8,4.8,472,56,10100,84
-P03,synthetic,82,Menstrual,Moderate,3.8,89,2.0,5.7,456,59,9150,71
-P03,synthetic,88,Follicular,Not at all,6.1,140,2.7,4.9,469,57,9950,81
-P03,synthetic,110,Menstrual,Moderate,3.7,87,2.0,5.8,454,58,9200,72
-P04,synthetic,1,Menstrual,Moderate,6.2,112,2.6,4.8,370,70,5200,35
-P04,synthetic,9,Follicular,Not at all,8.5,175,3.4,4.0,385,69,6000,41
-P04,synthetic,32,Menstrual,Moderate,6.3,115,2.5,4.9,372,71,5300,36
-P04,synthetic,40,Follicular,Not at all,8.8,180,3.5,3.9,388,69,6150,42
-P04,synthetic,62,Menstrual,Moderate,6.4,116,2.7,4.7,374,70,5400,37
-P04,synthetic,70,Follicular,Not at all,9.0,182,3.6,3.8,390,68,6250,43
-P04,synthetic,93,Menstrual,Moderate,6.5,117,2.6,4.8,371,71,5350,36
-P04,synthetic,101,Follicular,Not at all,8.9,181,3.5,3.9,386,69,6100,42
-P04,synthetic,123,Menstrual,Moderate,6.4,116,2.6,4.8,373,70,5400,37
-P05,synthetic,1,Menstrual,Moderate,4.8,98,2.4,5.4,425,64,7600,58
-P05,synthetic,7,Follicular,Not at all,7.0,152,3.1,4.7,442,63,8500,65
-P05,synthetic,28,Menstrual,Moderate,4.9,99,2.3,5.5,426,65,7700,59
-P05,synthetic,34,Follicular,Not at all,7.2,155,3.2,4.6,445,63,8600,66
-P05,synthetic,56,Menstrual,Moderate,5.0,101,2.5,5.3,428,64,7800,60
-P05,synthetic,62,Follicular,Not at all,7.4,158,3.3,4.5,448,62,8700,68
-P05,synthetic,83,Menstrual,Moderate,4.9,100,2.4,5.4,427,65,7750,59
-P05,synthetic,89,Follicular,Not at all,7.3,156,3.2,4.6,446,63,8650,67
-P05,synthetic,111,Menstrual,Moderate,5.0,101,2.4,5.4,429,64,7800,60
-P06,synthetic,1,Menstrual,Moderate,5.6,108,2.3,5.1,400,68,6500,46
-P06,synthetic,8,Follicular,Not at all,8.0,170,3.0,4.5,415,67,7350,54
-P06,synthetic,31,Menstrual,Moderate,5.7,109,2.4,5.0,402,69,6600,47
-P06,synthetic,38,Follicular,Not at all,8.2,172,3.1,4.4,418,67,7450,55
-P06,synthetic,60,Menstrual,Moderate,5.8,110,2.5,5.0,404,68,6700,48
-P06,synthetic,67,Follicular,Not at all,8.4,174,3.2,4.3,420,66,7550,56
-P06,synthetic,90,Menstrual,Moderate,5.7,109,2.4,5.1,401,69,6650,47
-P06,synthetic,97,Follicular,Not at all,8.3,173,3.1,4.4,417,67,7500,55
-P06,synthetic,119,Menstrual,Moderate,5.8,110,2.4,5.1,403,68,6700,48
+id,study_interval,day_in_study,phase,flow_volume,lh,estrogen,pdg,fsh,sleep_minutes,resting_hr,steps,active_minutes,glucose,stress_score,fatigue,cramps,stress,sleepissue,moodswing
+S001,synthetic,1,Menstrual,Moderate,4.04,87.0,2.31,4.77,448,57.5,8403,61,91.7,40.3,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S001,synthetic,8,Follicular,Not at all,6.81,131.3,2.91,4.17,463,56.7,8871,69,91.3,33.8,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S001,synthetic,25,Menstrual,Moderate,4.50,95.1,2.20,5.00,426,60.0,8028,60,95.7,52.8,Moderate,Moderate,Moderate,Low,Low
+S001,synthetic,32,Follicular,Not at all,7.50,145.1,2.80,4.40,412,59.0,8424,62,100.4,50.2,Low,Very Low/Little,Low,Low,Low
+S001,synthetic,47,Menstrual,Moderate,4.51,95.2,2.20,5.01,423,60.1,8069,57,95.1,50.0,Moderate,Moderate,Moderate,Low,Low
+S001,synthetic,54,Follicular,Not at all,7.52,145.4,2.80,4.41,434,59.1,8437,60,100.4,49.3,Low,Very Low/Little,Low,Low,Low
+S001,synthetic,72,Menstrual,Moderate,4.93,102.6,2.09,5.22,397,62.4,7090,51,102.2,61.9,High,High,High,Moderate,Moderate
+S001,synthetic,79,Follicular,Not at all,8.15,158.0,2.69,4.62,407,61.2,7451,57,109.6,60.9,Moderate,Very Low/Little,Moderate,Moderate,Low
+S001,synthetic,96,Menstrual,Moderate,4.02,86.7,2.32,4.76,455,57.4,8583,61,90.0,37.1,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S001,synthetic,103,Follicular,Not at all,6.78,130.7,2.92,4.16,460,56.6,9483,69,91.8,35.5,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S001,synthetic,123,Menstrual,Moderate,4.17,89.2,2.28,4.83,437,58.2,8299,58,91.9,43.0,Low,Moderate,Low,Very Low/Little,Very Low/Little
+S001,synthetic,130,Follicular,Not at all,7.00,135.0,2.88,4.23,444,57.3,8803,67,97.0,37.2,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S001,synthetic,144,Menstrual,Moderate,,,,,,,,,,,,,,,
+S002,synthetic,1,Menstrual,Moderate,4.03,86.8,2.32,4.76,446,58.4,8535,61,91.8,40.7,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S002,synthetic,8,Follicular,Not at all,6.79,130.9,2.92,4.16,452,57.6,9089,69,91.5,34.4,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S002,synthetic,27,Menstrual,Moderate,4.46,94.2,2.21,4.98,425,60.8,8074,54,95.6,49.3,Low,Moderate,Low,Low,Low
+S002,synthetic,34,Follicular,Not at all,7.44,143.7,2.81,4.38,431,59.8,8552,61,101.1,44.1,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S002,synthetic,51,Menstrual,Moderate,3.92,84.8,2.35,4.71,463,57.8,8607,64,89.1,32.4,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S002,synthetic,58,Follicular,Not at all,6.62,127.5,2.95,4.11,461,57.1,9562,69,87.8,32.0,Very Low/Little,Not at all,Very Low/Little,Not at all,Not at all
+S002,synthetic,76,Menstrual,Moderate,4.29,91.3,2.25,4.89,435,59.8,8315,59,92.0,44.1,Low,Moderate,Low,Very Low/Little,Low
+S002,synthetic,83,Follicular,Not at all,7.18,138.6,2.85,4.29,437,58.9,8938,65,97.6,43.0,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S002,synthetic,98,Menstrual,Moderate,4.39,93.0,2.23,4.94,426,60.4,7927,57,94.7,45.0,Low,Moderate,Low,Low,Low
+S002,synthetic,105,Follicular,Not at all,7.33,141.6,2.83,4.34,434,59.4,8653,64,100.1,45.7,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S002,synthetic,123,Menstrual,Moderate,4.99,103.5,2.08,5.24,396,63.7,6950,45,102.0,59.7,High,High,High,Moderate,Moderate
+S002,synthetic,130,Follicular,Not at all,8.23,159.6,2.68,4.64,416,62.4,7688,57,110.0,60.3,Moderate,Very Low/Little,Moderate,Moderate,Low
+S002,synthetic,148,Menstrual,Moderate,,,,,,,,,,,,,,,
+S003,synthetic,1,Menstrual,Moderate,4.33,92.0,2.24,4.91,423,61.0,8073,57,93.8,44.4,Low,Moderate,Low,Low,Low
+S003,synthetic,8,Follicular,Not at all,7.24,139.8,2.84,4.31,450,60.1,8633,69,97.7,45.7,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S003,synthetic,28,Menstrual,Moderate,4.11,88.3,2.30,4.81,431,59.9,8524,59,91.3,39.5,Low,Moderate,Low,Very Low/Little,Very Low/Little
+S003,synthetic,35,Follicular,Not at all,6.92,133.4,2.90,4.21,446,59.1,8942,69,91.3,43.9,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S003,synthetic,55,Menstrual,Moderate,3.93,85.1,2.34,4.72,448,58.9,8762,62,89.1,33.9,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S003,synthetic,62,Follicular,Not at all,6.65,128.0,2.94,4.12,452,58.2,9203,69,88.6,36.7,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S003,synthetic,80,Menstrual,Moderate,4.33,92.1,2.24,4.92,438,61.1,8461,54,93.8,45.3,Low,Moderate,Low,Low,Low
+S003,synthetic,87,Follicular,Not at all,7.25,140.0,2.84,4.32,440,60.2,8713,62,98.3,43.3,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S003,synthetic,104,Menstrual,Moderate,5.05,104.7,2.06,5.28,401,65.1,6937,44,104.5,65.7,High,High,High,Moderate,Moderate
+S003,synthetic,111,Follicular,Not at all,8.33,161.6,2.66,4.68,401,63.8,7679,53,112.4,59.5,Moderate,Very Low/Little,Moderate,Moderate,Low
+S003,synthetic,131,Menstrual,Moderate,4.69,98.3,2.15,5.09,424,63.0,7347,55,99.8,52.7,Moderate,Moderate,Moderate,Low,Low
+S003,synthetic,138,Follicular,Not at all,7.78,150.6,2.75,4.49,422,61.9,8115,57,103.6,51.5,Low,Very Low/Little,Low,Low,Low
+S003,synthetic,161,Menstrual,Moderate,,,,,,,,,,,,,,,
+S004,synthetic,1,Menstrual,Moderate,4.76,99.6,2.13,5.13,414,64.5,7302,50,99.3,55.8,Moderate,Moderate,Moderate,Moderate,Low
+S004,synthetic,8,Follicular,Not at all,7.90,152.9,2.73,4.53,417,63.3,8197,59,107.0,54.9,Moderate,Very Low/Little,Moderate,Low,Low
+S004,synthetic,28,Menstrual,Moderate,4.48,94.7,2.20,4.99,433,62.9,7862,55,95.0,49.4,Low,Moderate,Low,Low,Low
+S004,synthetic,35,Follicular,Not at all,7.47,144.4,2.80,4.39,445,61.9,8784,60,100.5,48.3,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S004,synthetic,57,Menstrual,Moderate,5.01,103.9,2.07,5.25,404,65.8,7043,48,103.5,65.4,High,High,High,Moderate,Moderate
+S004,synthetic,64,Follicular,Not at all,8.26,160.3,2.67,4.65,408,64.5,7653,58,111.4,61.0,Moderate,Very Low/Little,Moderate,Moderate,Low
+S004,synthetic,84,Menstrual,Moderate,4.79,100.1,2.13,5.15,413,64.6,7234,50,99.3,55.3,Moderate,Moderate,Moderate,Moderate,Moderate
+S004,synthetic,91,Follicular,Not at all,7.94,153.8,2.73,4.55,430,63.5,7754,57,106.7,54.0,Moderate,Very Low/Little,Moderate,Low,Low
+S004,synthetic,117,Menstrual,Moderate,5.09,105.4,2.05,5.30,394,66.3,7033,47,104.2,66.1,High,High,High,Moderate,Moderate
+S004,synthetic,124,Follicular,Not at all,8.39,162.8,2.65,4.70,403,65.0,7919,54,112.8,58.9,Moderate,Very Low/Little,Moderate,Moderate,Moderate
+S004,synthetic,145,Menstrual,Moderate,4.92,102.3,2.10,5.21,405,65.3,7140,48,100.2,61.6,High,High,High,Moderate,Moderate
+S004,synthetic,152,Follicular,Not at all,8.13,157.6,2.70,4.61,421,64.1,8012,51,107.8,61.3,Moderate,Very Low/Little,Moderate,Moderate,Low
+S004,synthetic,176,Menstrual,Moderate,,,,,,,,,,,,,,,
+S005,synthetic,1,Menstrual,Moderate,4.24,90.5,2.26,4.87,431,62.6,8298,59,92.1,45.4,Low,Moderate,Low,Very Low/Little,Low
+S005,synthetic,8,Follicular,Not at all,7.11,137.3,2.86,4.27,446,61.7,8649,68,95.5,42.2,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S005,synthetic,31,Menstrual,Moderate,4.35,92.3,2.24,4.92,436,63.2,8544,56,93.0,44.7,Low,Moderate,Low,Low,Low
+S005,synthetic,38,Follicular,Not at all,7.27,140.4,2.84,4.32,451,62.2,8827,61,98.4,42.0,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S005,synthetic,57,Menstrual,Moderate,4.50,95.0,2.20,5.00,420,64.0,8223,56,95.5,48.7,Moderate,Moderate,Moderate,Low,Low
+S005,synthetic,64,Follicular,Not at all,7.50,145.0,2.80,4.40,435,63.0,8517,64,101.6,48.3,Low,Very Low/Little,Low,Low,Low
+S005,synthetic,85,Menstrual,Moderate,4.46,94.4,2.21,4.98,431,63.8,8498,59,93.6,45.7,Low,Moderate,Low,Low,Low
+S005,synthetic,92,Follicular,Not at all,7.44,143.9,2.81,4.38,434,62.8,8496,62,102.9,46.2,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S005,synthetic,114,Menstrual,Moderate,4.45,94.1,2.21,4.97,429,63.7,8022,57,94.4,44.5,Low,Moderate,Low,Low,Low
+S005,synthetic,121,Follicular,Not at all,7.42,143.5,2.81,4.37,441,62.7,8950,63,99.2,45.7,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S005,synthetic,143,Menstrual,Moderate,4.42,93.7,2.22,4.96,433,63.6,7999,59,92.5,47.1,Low,Moderate,Low,Low,Low
+S005,synthetic,150,Follicular,Not at all,7.39,142.7,2.82,4.36,424,62.6,8791,64,99.7,44.4,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S005,synthetic,172,Menstrual,Moderate,,,,,,,,,,,,,,,
+S006,synthetic,1,Menstrual,Moderate,4.70,98.4,2.15,5.10,417,61.1,7744,51,98.8,58.6,Moderate,Moderate,Moderate,Low,Low
+S006,synthetic,8,Follicular,Not at all,7.80,150.9,2.75,4.50,426,60.0,8291,59,106.0,56.8,Low,Very Low/Little,Low,Low,Low
+S006,synthetic,31,Menstrual,Moderate,4.30,91.5,2.25,4.90,431,58.9,8359,58,93.4,47.9,Low,Moderate,Low,Very Low/Little,Low
+S006,synthetic,38,Follicular,Not at all,7.20,139.0,2.85,4.30,445,58.0,8254,61,95.9,41.6,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S006,synthetic,63,Menstrual,Moderate,4.83,100.8,2.12,5.16,401,61.8,7582,48,100.1,61.6,Moderate,Moderate,Moderate,Moderate,Moderate
+S006,synthetic,70,Follicular,Not at all,7.99,154.9,2.72,4.56,413,60.6,8155,58,106.9,55.3,Moderate,Very Low/Little,Moderate,Low,Low
+S006,synthetic,92,Menstrual,Moderate,4.84,101.0,2.11,5.17,420,61.9,7261,51,101.3,59.8,Moderate,Moderate,Moderate,Moderate,Moderate
+S006,synthetic,99,Follicular,Not at all,8.01,155.2,2.71,4.57,418,60.7,7821,60,108.6,53.6,Moderate,Very Low/Little,Moderate,Low,Low
+S006,synthetic,124,Menstrual,Moderate,4.43,93.8,2.22,4.97,433,59.6,8056,56,94.6,48.6,Low,Moderate,Low,Low,Low
+S006,synthetic,131,Follicular,Not at all,7.40,143.0,2.82,4.37,442,58.7,8682,62,99.3,44.6,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S006,synthetic,156,Menstrual,Moderate,4.59,96.7,2.18,5.05,421,60.5,7560,55,97.5,52.1,Moderate,Moderate,Moderate,Low,Low
+S006,synthetic,163,Follicular,Not at all,7.64,147.8,2.78,4.45,431,59.5,8404,62,105.3,51.2,Low,Very Low/Little,Low,Low,Low
+S006,synthetic,185,Menstrual,Moderate,,,,,,,,,,,,,,,
+S007,synthetic,1,Menstrual,Moderate,4.89,101.9,2.10,5.20,405,63.2,7140,51,100.7,61.5,Moderate,Moderate,Moderate,Moderate,Moderate
+S007,synthetic,8,Follicular,Not at all,8.09,156.8,2.70,4.60,407,62.0,7956,54,108.7,60.8,Moderate,Very Low/Little,Moderate,Low,Low
+S007,synthetic,32,Menstrual,Moderate,4.60,96.7,2.18,5.05,415,61.5,7513,55,97.5,52.4,Moderate,Moderate,Moderate,Low,Low
+S007,synthetic,39,Follicular,Not at all,7.65,147.9,2.78,4.45,435,60.5,8495,60,101.5,51.2,Low,Very Low/Little,Low,Low,Low
+S007,synthetic,68,Menstrual,Moderate,4.84,101.0,2.11,5.17,400,62.9,7767,49,99.7,59.2,Moderate,Moderate,Moderate,Moderate,Moderate
+S007,synthetic,75,Follicular,Not at all,8.01,155.3,2.71,4.57,418,61.7,7442,57,107.8,56.7,Moderate,Very Low/Little,Moderate,Low,Low
+S007,synthetic,100,Menstrual,Moderate,4.69,98.3,2.15,5.09,408,62.0,7718,50,98.2,55.6,Moderate,Moderate,Moderate,Low,Low
+S007,synthetic,107,Follicular,Not at all,7.78,150.6,2.75,4.49,427,60.9,8260,59,104.9,54.0,Low,Very Low/Little,Low,Low,Low
+S007,synthetic,134,Menstrual,Moderate,4.45,94.2,2.21,4.98,428,60.7,8003,56,97.5,50.2,Low,Moderate,Low,Low,Low
+S007,synthetic,141,Follicular,Not at all,7.43,143.6,2.81,4.38,443,59.8,8886,62,98.9,47.5,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S007,synthetic,166,Menstrual,Moderate,4.85,101.1,2.11,5.17,397,62.9,7329,56,98.1,59.3,Moderate,Moderate,Moderate,Moderate,Moderate
+S007,synthetic,173,Follicular,Not at all,8.02,155.4,2.71,4.57,419,61.7,7999,55,108.2,52.7,Moderate,Very Low/Little,Moderate,Low,Low
+S007,synthetic,197,Menstrual,Moderate,,,,,,,,,,,,,,,
+S008,synthetic,1,Menstrual,Moderate,4.39,93.1,2.23,4.95,443,61.4,8461,60,93.5,46.7,Low,Moderate,Low,Low,Low
+S008,synthetic,8,Follicular,Not at all,7.34,141.8,2.83,4.35,442,60.5,8620,63,99.9,44.3,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S008,synthetic,32,Menstrual,Moderate,5.04,104.5,2.06,5.27,394,65.0,7136,51,104.9,68.7,High,High,High,Moderate,Moderate
+S008,synthetic,39,Follicular,Not at all,8.32,161.3,2.66,4.67,420,63.7,7706,56,109.9,60.1,Moderate,Very Low/Little,Moderate,Moderate,Low
+S008,synthetic,64,Menstrual,Moderate,4.37,92.7,2.23,4.94,423,61.3,8399,57,95.4,47.5,Low,Moderate,Low,Low,Low
+S008,synthetic,71,Follicular,Not at all,7.31,141.1,2.83,4.34,434,60.4,8549,59,98.8,44.2,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S008,synthetic,99,Menstrual,Moderate,4.57,96.3,2.18,5.04,430,62.4,7684,54,97.9,49.3,Moderate,Moderate,Moderate,Low,Low
+S008,synthetic,106,Follicular,Not at all,7.61,147.2,2.78,4.44,432,61.4,8301,60,102.1,49.9,Low,Very Low/Little,Low,Low,Low
+S008,synthetic,130,Menstrual,Moderate,4.13,88.4,2.29,4.81,445,59.9,8464,59,90.4,39.3,Low,Moderate,Low,Very Low/Little,Very Low/Little
+S008,synthetic,137,Follicular,Not at all,6.94,133.8,2.89,4.21,450,59.1,9235,68,93.3,40.8,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S008,synthetic,162,Menstrual,Moderate,4.40,93.2,2.23,4.95,430,61.4,8244,58,94.8,45.3,Low,Moderate,Low,Low,Low
+S008,synthetic,169,Follicular,Not at all,7.34,141.9,2.83,4.35,442,60.5,8488,64,98.1,46.7,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S008,synthetic,192,Menstrual,Moderate,,,,,,,,,,,,,,,
+S009,synthetic,1,Menstrual,Moderate,3.99,86.1,2.33,4.75,439,60.2,8741,64,88.3,36.2,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S009,synthetic,8,Follicular,Not at all,6.74,129.8,2.93,4.15,459,59.5,8853,69,90.8,35.5,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S009,synthetic,26,Menstrual,Moderate,4.33,92.1,2.24,4.92,432,62.1,8189,58,94.7,45.5,Low,Moderate,Low,Low,Low
+S009,synthetic,33,Follicular,Not at all,7.25,140.0,2.84,4.32,439,61.2,8877,64,96.4,42.4,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S009,synthetic,48,Menstrual,Moderate,4.87,101.4,2.11,5.18,409,65.0,7352,48,99.5,60.1,Moderate,Moderate,Moderate,Moderate,Moderate
+S009,synthetic,55,Follicular,Not at all,8.05,156.0,2.71,4.58,414,63.8,7959,60,108.0,56.2,Moderate,Very Low/Little,Moderate,Low,Low
+S009,synthetic,72,Menstrual,Moderate,3.96,85.5,2.34,4.73,448,60.0,8874,60,88.7,34.3,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S009,synthetic,79,Follicular,Not at all,6.69,128.8,2.94,4.13,463,59.3,9216,70,88.9,30.7,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S009,synthetic,100,Menstrual,Moderate,4.04,87.0,2.31,4.77,454,60.5,8766,58,90.1,38.0,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S009,synthetic,107,Follicular,Not at all,6.81,131.3,2.91,4.17,454,59.7,9079,65,90.9,33.4,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S009,synthetic,122,Menstrual,Moderate,4.27,91.0,2.26,4.89,428,61.7,8021,57,91.3,41.1,Low,Moderate,Low,Very Low/Little,Low
+S009,synthetic,129,Follicular,Not at all,7.16,138.2,2.86,4.29,452,60.9,8973,62,97.0,43.3,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S009,synthetic,144,Menstrual,Moderate,,,,,,,,,,,,,,,
+S010,synthetic,1,Menstrual,Moderate,4.88,101.6,2.11,5.19,393,66.1,7303,49,101.1,60.5,Moderate,Moderate,Moderate,Moderate,Moderate
+S010,synthetic,8,Follicular,Not at all,8.06,156.3,2.71,4.59,423,64.9,7903,55,109.0,57.2,Moderate,Very Low/Little,Moderate,Low,Low
+S010,synthetic,26,Menstrual,Moderate,4.85,101.2,2.11,5.18,414,65.9,7065,49,102.1,59.7,Moderate,Moderate,Moderate,Moderate,Moderate
+S010,synthetic,33,Follicular,Not at all,8.03,155.6,2.71,4.58,425,64.8,7951,55,109.4,56.2,Moderate,Very Low/Little,Moderate,Low,Low
+S010,synthetic,54,Menstrual,Moderate,5.03,104.3,2.07,5.27,390,66.9,6843,48,103.8,66.2,High,High,High,Moderate,Moderate
+S010,synthetic,61,Follicular,Not at all,8.30,160.9,2.67,4.67,418,65.7,7694,52,112.4,64.7,Moderate,Very Low/Little,Moderate,Moderate,Low
+S010,synthetic,83,Menstrual,Moderate,3.94,85.2,2.34,4.72,452,60.9,8704,61,90.5,30.8,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S010,synthetic,90,Follicular,Not at all,6.66,128.2,2.94,4.12,453,60.2,9432,68,90.4,35.2,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S010,synthetic,111,Menstrual,Moderate,4.74,99.3,2.14,5.12,417,65.3,7497,54,99.5,57.6,Moderate,Moderate,Moderate,Moderate,Low
+S010,synthetic,118,Follicular,Not at all,7.87,152.3,2.74,4.52,420,64.2,8173,60,107.4,54.5,Moderate,Very Low/Little,Moderate,Low,Low
+S010,synthetic,133,Menstrual,Moderate,4.77,99.7,2.13,5.13,419,65.5,7580,52,101.0,57.3,Moderate,Moderate,Moderate,Moderate,Low
+S010,synthetic,140,Follicular,Not at all,7.90,153.1,2.73,4.53,423,64.3,8359,59,105.8,56.3,Moderate,Very Low/Little,Moderate,Low,Low
+S010,synthetic,160,Menstrual,Moderate,,,,,,,,,,,,,,,
+S011,synthetic,1,Menstrual,Moderate,4.95,102.9,2.09,5.23,400,62.5,7169,50,102.2,64.5,High,High,High,Moderate,Moderate
+S011,synthetic,8,Follicular,Not at all,8.18,158.6,2.69,4.63,424,61.3,7697,56,109.6,59.9,Moderate,Very Low/Little,Moderate,Moderate,Low
+S011,synthetic,27,Menstrual,Moderate,3.97,85.7,2.33,4.73,444,57.1,8726,61,90.0,38.2,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S011,synthetic,34,Follicular,Not at all,6.70,129.0,2.93,4.13,459,56.3,9099,68,90.0,34.6,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S011,synthetic,58,Menstrual,Moderate,4.58,96.5,2.18,5.04,427,60.5,7487,53,96.1,51.9,Moderate,Moderate,Moderate,Low,Low
+S011,synthetic,65,Follicular,Not at all,7.63,147.5,2.78,4.44,432,59.4,8540,60,103.1,48.7,Low,Very Low/Little,Low,Low,Low
+S011,synthetic,80,Menstrual,Moderate,4.93,102.5,2.09,5.21,399,62.4,6727,51,101.9,63.2,High,High,High,Moderate,Moderate
+S011,synthetic,87,Follicular,Not at all,8.14,157.9,2.69,4.61,416,61.1,7679,59,107.9,57.6,Moderate,Very Low/Little,Moderate,Moderate,Low
+S011,synthetic,107,Menstrual,Moderate,3.92,84.8,2.35,4.71,452,56.8,8784,63,89.1,37.5,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S011,synthetic,114,Follicular,Not at all,6.62,127.5,2.95,4.11,467,56.1,9342,71,89.9,35.1,Very Low/Little,Not at all,Very Low/Little,Not at all,Not at all
+S011,synthetic,135,Menstrual,Moderate,4.56,96.0,2.19,5.03,422,60.3,7963,53,96.1,51.4,Moderate,Moderate,Moderate,Low,Low
+S011,synthetic,142,Follicular,Not at all,7.59,146.8,2.79,4.43,437,59.3,8590,64,102.6,48.0,Low,Very Low/Little,Low,Low,Low
+S011,synthetic,159,Menstrual,Moderate,,,,,,,,,,,,,,,
+S012,synthetic,1,Menstrual,Moderate,4.21,89.8,2.27,4.85,442,59.4,8514,56,93.0,41.8,Low,Moderate,Low,Very Low/Little,Very Low/Little
+S012,synthetic,8,Follicular,Not at all,7.06,136.2,2.87,4.25,437,58.5,9082,66,94.3,38.9,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S012,synthetic,28,Menstrual,Moderate,4.57,96.2,2.18,5.03,414,61.4,7991,51,94.5,50.0,Moderate,Moderate,Moderate,Low,Low
+S012,synthetic,35,Follicular,Not at all,7.60,147.0,2.78,4.43,432,60.3,8065,63,100.1,46.7,Low,Very Low/Little,Low,Low,Low
+S012,synthetic,55,Menstrual,Moderate,4.93,102.5,2.09,5.21,405,63.4,7111,50,100.5,63.1,High,High,High,Moderate,Moderate
+S012,synthetic,62,Follicular,Not at all,8.14,157.8,2.69,4.61,408,62.1,7796,56,108.8,58.5,Moderate,Very Low/Little,Moderate,Moderate,Low
+S012,synthetic,84,Menstrual,Moderate,4.27,91.0,2.26,4.89,440,59.7,8515,57,93.3,41.3,Low,Moderate,Low,Very Low/Little,Low
+S012,synthetic,91,Follicular,Not at all,7.16,138.1,2.86,4.29,448,58.9,8978,67,97.0,41.5,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S012,synthetic,114,Menstrual,Moderate,5.03,104.2,2.07,5.26,400,63.9,6993,49,102.0,68.3,High,High,High,Moderate,Moderate
+S012,synthetic,121,Follicular,Not at all,8.29,160.8,2.67,4.66,416,62.6,7733,57,111.3,59.9,Moderate,Very Low/Little,Moderate,Moderate,Low
+S012,synthetic,141,Menstrual,Moderate,3.95,85.4,2.34,4.73,457,58.0,8911,61,88.5,31.4,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S012,synthetic,148,Follicular,Not at all,6.68,128.6,2.94,4.13,457,57.3,9041,70,88.4,34.6,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S012,synthetic,172,Menstrual,Moderate,,,,,,,,,,,,,,,
+S013,synthetic,1,Menstrual,Moderate,4.01,86.4,2.32,4.75,439,59.3,8703,59,90.1,32.2,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S013,synthetic,8,Follicular,Not at all,6.76,130.2,2.92,4.15,453,58.5,9187,69,89.7,36.9,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S013,synthetic,30,Menstrual,Moderate,4.47,94.5,2.21,4.99,416,61.8,7811,54,94.2,48.5,Low,Moderate,Low,Low,Low
+S013,synthetic,37,Follicular,Not at all,7.46,144.1,2.81,4.39,444,60.9,8704,61,100.6,47.6,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S013,synthetic,57,Menstrual,Moderate,4.03,86.8,2.32,4.77,454,59.4,8780,59,90.5,35.3,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S013,synthetic,64,Follicular,Not at all,6.80,130.9,2.92,4.17,462,58.7,9438,68,92.0,34.3,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S013,synthetic,86,Menstrual,Moderate,5.04,104.4,2.07,5.27,394,65.0,6928,50,102.8,60.8,High,High,High,Moderate,Moderate
+S013,synthetic,93,Follicular,Not at all,8.31,161.1,2.67,4.67,409,63.7,7847,54,111.9,61.2,Moderate,Very Low/Little,Moderate,Moderate,Low
+S013,synthetic,113,Menstrual,Moderate,4.57,96.2,2.18,5.03,419,62.4,7860,57,97.4,52.0,Moderate,Moderate,Moderate,Low,Low
+S013,synthetic,120,Follicular,Not at all,7.60,147.0,2.78,4.43,439,61.3,8498,63,103.4,51.0,Low,Very Low/Little,Low,Low,Low
+S013,synthetic,145,Menstrual,Moderate,3.92,84.8,2.35,4.71,458,58.8,8623,65,88.0,33.7,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S013,synthetic,152,Follicular,Not at all,6.62,127.5,2.95,4.11,453,58.1,9523,69,87.7,35.2,Very Low/Little,Not at all,Very Low/Little,Not at all,Not at all
+S013,synthetic,174,Menstrual,Moderate,,,,,,,,,,,,,,,
+S014,synthetic,1,Menstrual,Moderate,5.04,104.5,2.06,5.27,411,66.0,6860,49,102.2,63.5,High,High,High,Moderate,Moderate
+S014,synthetic,8,Follicular,Not at all,8.32,161.3,2.66,4.67,408,64.7,7320,54,112.0,59.5,Moderate,Very Low/Little,Moderate,Moderate,Low
+S014,synthetic,30,Menstrual,Moderate,4.72,98.9,2.14,5.11,415,64.2,7719,53,97.9,51.8,Moderate,Moderate,Moderate,Moderate,Low
+S014,synthetic,37,Follicular,Not at all,7.83,151.6,2.74,4.51,427,63.1,8113,59,108.4,51.9,Moderate,Very Low/Little,Moderate,Low,Low
+S014,synthetic,63,Menstrual,Moderate,4.54,95.8,2.19,5.02,419,63.2,7910,53,97.0,52.3,Moderate,Moderate,Moderate,Low,Low
+S014,synthetic,70,Follicular,Not at all,7.56,146.3,2.79,4.42,438,62.2,8505,61,103.1,45.7,Low,Very Low/Little,Low,Low,Low
+S014,synthetic,93,Menstrual,Moderate,5.03,104.2,2.07,5.26,401,65.9,7107,46,101.8,62.9,High,High,High,Moderate,Moderate
+S014,synthetic,100,Follicular,Not at all,8.29,160.8,2.67,4.66,413,64.6,7775,55,110.7,64.3,Moderate,Very Low/Little,Moderate,Moderate,Low
+S014,synthetic,123,Menstrual,Moderate,4.73,99.1,2.14,5.12,406,64.3,7495,48,100.9,59.9,Moderate,Moderate,Moderate,Moderate,Low
+S014,synthetic,130,Follicular,Not at all,7.85,152.0,2.74,4.52,415,63.2,8107,61,107.0,53.2,Moderate,Very Low/Little,Moderate,Low,Low
+S014,synthetic,155,Menstrual,Moderate,4.76,99.6,2.13,5.13,409,64.4,7401,52,99.1,56.6,Moderate,Moderate,Moderate,Moderate,Low
+S014,synthetic,162,Follicular,Not at all,7.89,152.8,2.73,4.53,418,63.3,8244,58,107.0,52.7,Moderate,Very Low/Little,Moderate,Low,Low
+S014,synthetic,186,Menstrual,Moderate,,,,,,,,,,,,,,,
+S015,synthetic,1,Menstrual,Moderate,4.36,92.5,2.24,4.93,442,63.2,8331,59,94.2,49.2,Low,Moderate,Low,Low,Low
+S015,synthetic,8,Follicular,Not at all,7.29,140.7,2.84,4.33,447,62.3,8576,67,98.2,44.2,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S015,synthetic,32,Menstrual,Moderate,4.57,96.2,2.18,5.03,420,64.4,8230,54,96.9,53.3,Moderate,Moderate,Moderate,Low,Low
+S015,synthetic,39,Follicular,Not at all,7.60,147.1,2.78,4.43,424,63.3,8504,61,102.9,47.2,Low,Very Low/Little,Low,Low,Low
+S015,synthetic,62,Menstrual,Moderate,4.58,96.5,2.18,5.04,419,64.5,7723,51,98.0,53.6,Moderate,Moderate,Moderate,Low,Low
+S015,synthetic,69,Follicular,Not at all,7.63,147.5,2.78,4.44,427,63.4,8410,63,102.6,54.9,Low,Very Low/Little,Low,Low,Low
+S015,synthetic,94,Menstrual,Moderate,4.50,94.9,2.20,5.00,431,64.0,7884,56,95.9,49.1,Low,Moderate,Low,Low,Low
+S015,synthetic,101,Follicular,Not at all,7.49,144.9,2.80,4.40,443,63.0,8373,60,102.2,49.2,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S015,synthetic,126,Menstrual,Moderate,5.07,105.0,2.06,5.29,404,67.1,6906,52,102.9,65.2,High,High,High,Moderate,Moderate
+S015,synthetic,133,Follicular,Not at all,8.36,162.1,2.66,4.69,398,65.9,7956,55,110.8,63.7,Moderate,Very Low/Little,Moderate,Moderate,Low
+S015,synthetic,158,Menstrual,Moderate,4.90,101.9,2.10,5.20,405,66.2,7213,50,101.6,61.6,Moderate,Moderate,Moderate,Moderate,Moderate
+S015,synthetic,165,Follicular,Not at all,8.10,156.9,2.70,4.60,423,65.0,7879,55,110.0,58.9,Moderate,Very Low/Little,Moderate,Low,Low
+S015,synthetic,192,Menstrual,Moderate,,,,,,,,,,,,,,,
+S016,synthetic,1,Menstrual,Moderate,3.95,85.4,2.34,4.73,455,57.0,8670,63,87.1,36.4,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S016,synthetic,8,Follicular,Not at all,6.68,128.5,2.94,4.13,457,56.3,9356,70,90.1,36.1,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S016,synthetic,32,Menstrual,Moderate,4.97,103.2,2.08,5.24,389,62.6,7101,50,100.5,64.0,High,High,High,Moderate,Moderate
+S016,synthetic,39,Follicular,Not at all,8.21,159.1,2.68,4.64,412,61.4,7726,55,111.1,60.1,Moderate,Very Low/Little,Moderate,Moderate,Low
+S016,synthetic,60,Menstrual,Moderate,4.60,96.7,2.18,5.05,415,60.5,7728,55,96.6,52.9,Moderate,Moderate,Moderate,Low,Low
+S016,synthetic,67,Follicular,Not at all,7.65,147.9,2.78,4.45,433,59.5,8359,60,102.3,52.4,Low,Very Low/Little,Low,Low,Low
+S016,synthetic,95,Menstrual,Moderate,4.88,101.7,2.10,5.19,400,62.1,7052,50,100.2,58.4,Moderate,Moderate,Moderate,Moderate,Moderate
+S016,synthetic,102,Follicular,Not at all,8.07,156.4,2.70,4.59,429,60.9,8146,55,108.1,57.3,Moderate,Very Low/Little,Moderate,Low,Low
+S016,synthetic,128,Menstrual,Moderate,4.45,94.1,2.21,4.97,441,59.7,8260,53,94.6,44.9,Low,Moderate,Low,Low,Low
+S016,synthetic,135,Follicular,Not at all,7.42,143.5,2.81,4.37,442,58.7,8320,60,100.3,43.9,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S016,synthetic,162,Menstrual,Moderate,3.99,86.1,2.33,4.75,457,57.2,8818,60,90.7,37.7,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S016,synthetic,169,Follicular,Not at all,6.74,129.8,2.93,4.15,451,56.5,9310,70,91.6,38.0,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S016,synthetic,195,Menstrual,Moderate,,,,,,,,,,,,,,,
+S017,synthetic,1,Menstrual,Moderate,4.84,100.9,2.12,5.17,399,62.8,7305,49,101.2,58.9,Moderate,Moderate,Moderate,Moderate,Moderate
+S017,synthetic,8,Follicular,Not at all,8.00,155.1,2.72,4.57,428,61.7,7846,62,109.6,57.9,Moderate,Very Low/Little,Moderate,Low,Low
+S017,synthetic,24,Menstrual,Moderate,4.62,97.2,2.17,5.06,436,61.7,7474,53,97.5,53.1,Moderate,Moderate,Moderate,Low,Low
+S017,synthetic,31,Follicular,Not at all,7.68,148.7,2.77,4.46,428,60.6,8183,60,103.7,52.9,Low,Very Low/Little,Low,Low,Low
+S017,synthetic,52,Menstrual,Moderate,4.18,89.4,2.28,4.84,446,59.2,8564,59,93.0,40.1,Low,Moderate,Low,Very Low/Little,Very Low/Little
+S017,synthetic,59,Follicular,Not at all,7.02,135.4,2.88,4.24,452,58.4,8899,68,96.4,37.6,Very Low/Little,Not at all,Very Low/Little,Very Low/Little,Very Low/Little
+S017,synthetic,78,Menstrual,Moderate,4.08,87.7,2.30,4.79,443,58.7,8646,58,90.2,34.9,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S017,synthetic,85,Follicular,Not at all,6.87,132.4,2.90,4.19,449,57.9,9106,68,92.8,38.2,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S017,synthetic,101,Menstrual,Moderate,4.02,86.6,2.32,4.76,439,58.4,8691,59,89.4,40.0,Very Low/Little,Low,Very Low/Little,Very Low/Little,Very Low/Little
+S017,synthetic,108,Follicular,Not at all,6.78,130.6,2.92,4.16,441,57.6,9023,65,93.0,37.5,Very Low/Little,Not at all,Very Low/Little,Not at all,Very Low/Little
+S017,synthetic,123,Menstrual,Moderate,5.02,104.1,2.07,5.26,396,63.9,6863,50,100.9,66.1,High,High,High,Moderate,Moderate
+S017,synthetic,130,Follicular,Not at all,8.28,160.6,2.67,4.66,403,62.6,7621,58,110.9,64.5,Moderate,Very Low/Little,Moderate,Moderate,Low
+S017,synthetic,145,Menstrual,Moderate,,,,,,,,,,,,,,,
+S018,synthetic,1,Menstrual,Moderate,4.48,94.6,2.21,4.99,415,61.9,8003,52,93.8,53.0,Low,Moderate,Low,Low,Low
+S018,synthetic,8,Follicular,Not at all,7.47,144.4,2.81,4.39,443,60.9,8531,64,102.3,48.4,Low,Not at all,Low,Very Low/Little,Very Low/Little
+S018,synthetic,28,Menstrual,Moderate,4.64,97.5,2.16,5.07,423,62.8,7508,52,96.3,55.4,Moderate,Moderate,Moderate,Low,Low
+S018,synthetic,35,Follicular,Not at all,7.71,149.2,2.76,4.47,424,61.7,8214,60,105.6,48.0,Low,Very Low/Little,Low,Low,Low
+S018,synthetic,53,Menstrual,Moderate,4.70,98.5,2.15,5.10,417,63.1,7435,53,99.0,58.8,Moderate,Moderate,Moderate,Low,Low
+S018,synthetic,60,Follicular,Not at all,7.80,151.0,2.75,4.50,424,62.0,8109,58,104.6,56.3,Low,Very Low/Little,Low,Low,Low
+S018,synthetic,79,Menstrual,Moderate,5.05,104.6,2.06,5.27,402,65.0,6996,47,101.6,64.6,High,High,High,Moderate,Moderate
+S018,synthetic,86,Follicular,Not at all,8.32,161.4,2.66,4.67,397,63.7,7714,56,113.0,58.8,Moderate,Very Low/Little,Moderate,Moderate,Low
+S018,synthetic,106,Menstrual,Moderate,5.10,105.4,2.05,5.30,389,65.3,6869,45,103.0,67.1,High,High,High,Moderate,Moderate
+S018,synthetic,113,Follicular,Not at all,8.39,162.9,2.65,4.70,409,64.0,7712,54,112.5,65.0,Moderate,Very Low/Little,Moderate,Moderate,Moderate
+S018,synthetic,135,Menstrual,Moderate,4.75,99.3,2.14,5.12,408,63.4,7381,48,100.2,54.8,Moderate,Moderate,Moderate,Moderate,Low
+S018,synthetic,142,Follicular,Not at all,7.87,152.4,2.74,4.52,421,62.2,8398,57,107.1,53.1,Moderate,Very Low/Little,Moderate,Low,Low
+S018,synthetic,164,Menstrual,Moderate,,,,,,,,,,,,,,,

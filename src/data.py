@@ -12,6 +12,16 @@ DEFAULT_MIN_CYCLE_LENGTH = 10
 DEFAULT_MAX_CYCLE_LENGTH = 90
 MAX_MENSTRUAL_GAP_DAYS = 2
 
+ORDINAL_SELF_REPORT_VALUES = {
+    "not at all": 0.0,
+    "very low": 1.0,
+    "very low/little": 1.0,
+    "low": 2.0,
+    "moderate": 3.0,
+    "high": 4.0,
+    "very high": 5.0,
+}
+
 
 @dataclass(frozen=True)
 class CycleExample:
@@ -72,6 +82,16 @@ def is_positive_flow(flow_volume: Any, phase: Any = None) -> bool:
     if flow and flow not in {"not at all", "none", "no", "0", "nan"}:
         return True
     return str(phase or "").strip().lower() == "menstrual"
+
+
+def safe_ordinal(value: Any) -> float | None:
+    text = str(value or "").strip().lower()
+    if not text:
+        return None
+    if text in ORDINAL_SELF_REPORT_VALUES:
+        return ORDINAL_SELF_REPORT_VALUES[text]
+    number = safe_float(text)
+    return number if number is not None and 0.0 <= number <= 5.0 else None
 
 
 def find_data_dir(data_dir: str | Path) -> Path:
@@ -163,6 +183,26 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
                     if metric not in tables_used["hormones_and_selfreport.csv"]:
                         tables_used["hormones_and_selfreport.csv"].append(metric)
 
+            self_report_aliases = {
+                "appetite": "selfreport_appetite",
+                "exerciselevel": "selfreport_exercise_level",
+                "headaches": "selfreport_headaches",
+                "cramps": "selfreport_cramps",
+                "sorebreasts": "selfreport_sore_breasts",
+                "fatigue": "selfreport_fatigue",
+                "sleepissue": "selfreport_sleep_issue",
+                "moodswing": "selfreport_mood_swing",
+                "stress": "selfreport_stress",
+                "foodcravings": "selfreport_food_cravings",
+                "indigestion": "selfreport_indigestion",
+                "bloating": "selfreport_bloating",
+            }
+            for column, metric in self_report_aliases.items():
+                value = safe_ordinal(row.get(column))
+                if value is not None and _add_measurement(measurements, pid, interval, day, metric, value):
+                    if metric not in tables_used["hormones_and_selfreport.csv"]:
+                        tables_used["hormones_and_selfreport.csv"].append(metric)
+
     sleep_path = base / "sleep.csv"
     if sleep_path.exists():
         sleep_metrics = {
@@ -222,6 +262,34 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
         if daily_steps:
             tables_used["steps.csv"].append("steps")
 
+    glucose_path = base / "glucose.csv"
+    if glucose_path.exists():
+        used_glucose = False
+        with glucose_path.open(newline="") as handle:
+            for row in csv.DictReader(handle):
+                pid = normalize_id(row.get("id"))
+                interval = normalize_interval(row.get("study_interval"))
+                day = safe_int(row.get("day_in_study"))
+                used_glucose |= _add_measurement(
+                    measurements, pid, interval, day, "glucose", row.get("glucose_value")
+                )
+        if used_glucose:
+            tables_used["glucose.csv"].append("glucose")
+
+    stress_path = base / "stress_score.csv"
+    if stress_path.exists():
+        used_stress = False
+        with stress_path.open(newline="") as handle:
+            for row in csv.DictReader(handle):
+                pid = normalize_id(row.get("id"))
+                interval = normalize_interval(row.get("study_interval"))
+                day = safe_int(row.get("day_in_study"))
+                used_stress |= _add_measurement(
+                    measurements, pid, interval, day, "wearable_stress_score", row.get("stress_score")
+                )
+        if used_stress:
+            tables_used["stress_score.csv"].append("wearable_stress_score")
+
     return LoadedData(
         flow_rows=flow_rows,
         measurements=measurements,
@@ -269,10 +337,31 @@ def load_combined_csv(data_file: str | Path) -> LoadedData:
                 "resting_heart_rate": "resting_heart_rate",
                 "steps": "steps",
                 "active_minutes": "active_minutes",
+                "glucose": "glucose",
+                "glucose_value": "glucose",
+                "stress_score": "wearable_stress_score",
             }
             for column, metric in aliases.items():
                 if column in row:
                     _add_measurement(measurements, pid, interval, day, metric, row[column])
+            self_report_aliases = {
+                "appetite": "selfreport_appetite",
+                "exerciselevel": "selfreport_exercise_level",
+                "headaches": "selfreport_headaches",
+                "cramps": "selfreport_cramps",
+                "sorebreasts": "selfreport_sore_breasts",
+                "fatigue": "selfreport_fatigue",
+                "sleepissue": "selfreport_sleep_issue",
+                "moodswing": "selfreport_mood_swing",
+                "stress": "selfreport_stress",
+                "foodcravings": "selfreport_food_cravings",
+                "indigestion": "selfreport_indigestion",
+                "bloating": "selfreport_bloating",
+            }
+            for column, metric in self_report_aliases.items():
+                value = safe_ordinal(row.get(column))
+                if value is not None:
+                    _add_measurement(measurements, pid, interval, day, metric, value)
     used = sorted({metric for day_values in measurements.values() for metric in day_values})
     return LoadedData(
         flow_rows=flow_rows,

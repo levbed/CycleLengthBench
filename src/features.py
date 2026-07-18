@@ -34,6 +34,26 @@ HORMONE_METRICS = [
     "hormone_fsh",
 ]
 
+SYMPTOM_METRICS = [
+    "selfreport_appetite",
+    "selfreport_exercise_level",
+    "selfreport_headaches",
+    "selfreport_cramps",
+    "selfreport_sore_breasts",
+    "selfreport_fatigue",
+    "selfreport_sleep_issue",
+    "selfreport_mood_swing",
+    "selfreport_stress",
+    "selfreport_food_cravings",
+    "selfreport_indigestion",
+    "selfreport_bloating",
+]
+
+METABOLIC_STRESS_METRICS = [
+    "glucose",
+    "wearable_stress_score",
+]
+
 
 @dataclass
 class FeatureTable:
@@ -41,6 +61,8 @@ class FeatureTable:
     history_features: list[str]
     wearable_features: list[str]
     hormone_features: list[str]
+    symptom_features: list[str]
+    metabolic_stress_features: list[str]
     variables_used: dict[str, list[str]]
 
 
@@ -84,6 +106,8 @@ def build_feature_table(
     rows: list[dict[str, Any]] = []
     wearable_features: set[str] = set()
     hormone_features: set[str] = set()
+    symptom_features: set[str] = set()
+    metabolic_stress_features: set[str] = set()
     variables_used: dict[str, set[str]] = defaultdict(set)
 
     for example in examples:
@@ -132,6 +156,18 @@ def build_feature_table(
                 hormone_features.update(names)
                 variables_used["hormones"].add(metric)
 
+        for metric in SYMPTOM_METRICS:
+            names = _add_stats(row, metric, by_metric.get(metric, []), days_by_metric.get(metric, set()), cycle_days)
+            if names:
+                symptom_features.update(names)
+                variables_used["symptoms"].add(metric)
+
+        for metric in METABOLIC_STRESS_METRICS:
+            names = _add_stats(row, metric, by_metric.get(metric, []), days_by_metric.get(metric, set()), cycle_days)
+            if names:
+                metabolic_stress_features.update(names)
+                variables_used["glucose_stress"].add(metric)
+
         rows.append(row)
 
     return FeatureTable(
@@ -139,6 +175,8 @@ def build_feature_table(
         history_features=HISTORY_FEATURES.copy(),
         wearable_features=sorted(wearable_features),
         hormone_features=sorted(hormone_features),
+        symptom_features=sorted(symptom_features),
+        metabolic_stress_features=sorted(metabolic_stress_features),
         variables_used={key: sorted(value) for key, value in variables_used.items()},
     )
 
@@ -147,9 +185,16 @@ def feature_tracks(feature_table: FeatureTable) -> dict[str, list[str]]:
     history = feature_table.history_features
     wearables = feature_table.wearable_features
     hormones = feature_table.hormone_features
-    return {
+    symptoms = feature_table.symptom_features
+    glucose_stress = feature_table.metabolic_stress_features
+    tracks = {
         "history_only": history,
         "history_plus_wearables": history + wearables,
         "history_plus_hormones": history + hormones,
-        "full_multimodal": history + wearables + hormones,
+        "full_multimodal": history + wearables + hormones + symptoms + glucose_stress,
     }
+    if symptoms:
+        tracks["history_plus_symptoms"] = history + symptoms
+    if glucose_stress:
+        tracks["history_plus_glucose_stress"] = history + glucose_stress
+    return tracks

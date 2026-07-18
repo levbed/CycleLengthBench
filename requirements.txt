@@ -1,2 +1,4 @@
-# mcPHASES CycleBench is implemented with the Python standard library only.
-# Python 3.10+ is recommended.
+matplotlib>=3.9,<4
+numpy>=2.0,<3
+openai>=2.0,<3
+scikit-learn>=1.5,<2

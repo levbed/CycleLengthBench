@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use CycleBench, cite this software and the mcPHASES dataset."
+title: "mcPHASES CycleBench"
+type: software
+authors:
+  - family-names: "Bedniagin"
+    given-names: "Lev"
+version: 1.1.0
+date-released: 2026-07-18
+license: MIT
+keywords:
+  - menstrual health
+  - multimodal benchmark
+  - cycle length forecasting
+  - wearable data
+  - hormones
+references:
+  - type: dataset
+    authors:
+      - family-names: "Lin"
+        given-names: "Blue"
+      - family-names: "Li"
+        given-names: "Jin Yi"
+      - family-names: "Kalani"
+        given-names: "Kaavya"
+      - family-names: "Truong"
+        given-names: "Khai"
+      - family-names: "Mariakakis"
+        given-names: "Alex"
+    title: "mcPHASES: A Dataset of Physiological, Hormonal, and Self-reported Events and Symptoms for Menstrual Health Tracking with Wearables"
+    year: 2025
+    version: 1.0.0
+    doi: 10.13026/zx6a-2c81

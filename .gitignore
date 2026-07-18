@@ -2,7 +2,10 @@ mcphases-a-dataset-of-physiological-hormonal-and-self-reported-events-and-sympto
 results/*.csv
 results/*.png
 results/*.json
+results/*.md
 .DS_Store
+.env
+.venv/
 __pycache__/
 .pytest_cache/
 *.pyc
