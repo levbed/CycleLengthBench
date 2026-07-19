@@ -3,7 +3,13 @@ from __future__ import annotations
 import unittest
 
 from src.data import safe_ordinal
-from src.evaluate import DEFAULT_RIDGE_ALPHAS, evaluate_feature_table, participant_bootstrap_mae
+from src.evaluate import (
+    DEFAULT_MODEL_IDS,
+    DEFAULT_RIDGE_ALPHAS,
+    default_model_grids,
+    evaluate_feature_table,
+    participant_bootstrap_mae,
+)
 from src.features import HISTORY_FEATURES, FeatureTable, feature_tracks
 
 
@@ -48,14 +54,24 @@ class EvaluationTests(unittest.TestCase):
         self.assertIsNone(safe_ordinal("unknown"))
 
     def test_nested_ridge_records_only_prespecified_alphas(self) -> None:
-        _, fold_scores, _ = evaluate_feature_table(_evaluation_table(), bootstrap_replicates=100)
+        _, fold_scores, _ = evaluate_feature_table(
+            _evaluation_table(), model_ids=("ridge",), bootstrap_replicates=100
+        )
         selected = {
             float(row["selected_alpha"])
             for row in fold_scores
-            if row["model"] == "ridge_nested_group_cv"
+            if row["model"] == "ridge"
         }
         self.assertTrue(selected)
         self.assertTrue(selected.issubset(set(DEFAULT_RIDGE_ALPHAS)))
+
+    def test_all_prespecified_model_families_run(self) -> None:
+        grids = {model: candidates[:1] for model, candidates in default_model_grids().items()}
+        scores, _, _ = evaluate_feature_table(
+            _evaluation_table(), model_grids=grids, bootstrap_replicates=20
+        )
+        models = {row["model"] for row in scores if row["track"] == "history_only"}
+        self.assertEqual(models, set(DEFAULT_MODEL_IDS))
 
     def test_optional_multimodal_tracks_are_included_when_available(self) -> None:
         table = _evaluation_table()
@@ -72,14 +88,15 @@ class EvaluationTests(unittest.TestCase):
                 for error in errors:
                     predictions.append(
                         {
+                            "model": "ridge",
                             "track": track,
                             "participant_id": participant,
                             "error_days": error,
                         }
                     )
         intervals = participant_bootstrap_mae(predictions, replicates=200, seed=7)
-        self.assertAlmostEqual(intervals["better"]["delta_mae_ci_low"], -1.0)
-        self.assertAlmostEqual(intervals["better"]["delta_mae_ci_high"], -1.0)
+        self.assertAlmostEqual(intervals[("ridge", "better")]["delta_mae_ci_low"], -1.0)
+        self.assertAlmostEqual(intervals[("ridge", "better")]["delta_mae_ci_high"], -1.0)
 
 
 if __name__ == "__main__":

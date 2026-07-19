@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import csv
+import json
 import math
+import os
 import random
 import statistics
 from collections import defaultdict
@@ -9,11 +11,16 @@ from pathlib import Path
 from typing import Any, Iterable
 
 import numpy as np
+
+os.environ.setdefault("LOKY_MAX_CPU_COUNT", "1")
+
+from sklearn.ensemble import HistGradientBoostingRegressor
 from sklearn.impute import SimpleImputer
 from sklearn.linear_model import Ridge
 from sklearn.model_selection import GroupKFold
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVR
 
 from .features import FeatureTable, feature_tracks
 
@@ -28,8 +35,49 @@ METRIC_NAMES = [
 ]
 
 DEFAULT_RIDGE_ALPHAS = (0.1, 1.0, 10.0, 100.0)
+DEFAULT_MODEL_IDS = ("ridge", "rbf_svr", "hist_gradient_boosting")
+MODEL_LABELS = {
+    "baseline": "Baseline",
+    "ridge": "Ridge",
+    "rbf_svr": "RBF-SVR",
+    "hist_gradient_boosting": "HistGradientBoosting",
+}
 DEFAULT_BOOTSTRAP_REPLICATES = 2000
 DEFAULT_RANDOM_SEED = 2026
+
+
+def default_model_grids(
+    ridge_alphas: Iterable[float] = DEFAULT_RIDGE_ALPHAS,
+) -> dict[str, list[dict[str, Any]]]:
+    # Simpler or more strongly regularized candidates appear first for deterministic ties.
+    return {
+        "ridge": [
+            {"alpha": float(alpha)}
+            for alpha in sorted({float(value) for value in ridge_alphas}, reverse=True)
+        ],
+        "rbf_svr": [
+            {"C": c, "epsilon": epsilon, "gamma": "scale"}
+            for c in (1.0, 10.0, 100.0)
+            for epsilon in (3.0, 1.0)
+        ],
+        "hist_gradient_boosting": [
+            {
+                "learning_rate": 0.05,
+                "max_iter": 150,
+                "max_leaf_nodes": leaves,
+                "min_samples_leaf": minimum,
+                "l2_regularization": regularization,
+            }
+            for leaves, minimum, regularization in (
+                (3, 10, 10.0),
+                (3, 5, 10.0),
+                (7, 10, 10.0),
+                (7, 5, 10.0),
+                (3, 10, 1.0),
+                (7, 5, 1.0),
+            )
+        ],
+    }
 
 
 def median(values: Iterable[float]) -> float:
@@ -87,14 +135,87 @@ def _matrix(rows: list[dict[str, Any]], indices: list[int], feature_names: list[
     )
 
 
-def _pipeline(alpha: float) -> Pipeline:
-    return Pipeline(
-        steps=[
-            ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
-            ("scaler", StandardScaler()),
-            ("ridge", Ridge(alpha=alpha)),
-        ]
-    )
+def _pipeline(model_id: str, parameters: dict[str, Any], seed: int) -> Pipeline:
+    if model_id == "ridge":
+        return Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+                ("scaler", StandardScaler()),
+                ("regressor", Ridge(alpha=float(parameters["alpha"]))),
+            ]
+        )
+    if model_id == "rbf_svr":
+        return Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+                ("scaler", StandardScaler()),
+                (
+                    "regressor",
+                    SVR(
+                        kernel="rbf",
+                        C=float(parameters["C"]),
+                        epsilon=float(parameters["epsilon"]),
+                        gamma=parameters["gamma"],
+                    ),
+                ),
+            ]
+        )
+    if model_id == "hist_gradient_boosting":
+        return Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="median", keep_empty_features=True)),
+                (
+                    "regressor",
+                    HistGradientBoostingRegressor(
+                        learning_rate=float(parameters["learning_rate"]),
+                        max_iter=int(parameters["max_iter"]),
+                        max_leaf_nodes=int(parameters["max_leaf_nodes"]),
+                        min_samples_leaf=int(parameters["min_samples_leaf"]),
+                        l2_regularization=float(parameters["l2_regularization"]),
+                        early_stopping=False,
+                        random_state=seed,
+                    ),
+                ),
+            ]
+        )
+    raise ValueError(f"Unknown model: {model_id}")
+
+
+def _parameter_key(parameters: dict[str, Any]) -> str:
+    return json.dumps(parameters, sort_keys=True, separators=(",", ":"))
+
+
+def select_model_parameters(
+    rows: list[dict[str, Any]],
+    train_indices: list[int],
+    feature_names: list[str],
+    model_id: str,
+    candidates: list[dict[str, Any]],
+    seed: int = DEFAULT_RANDOM_SEED,
+) -> tuple[dict[str, Any], dict[str, float]]:
+    if not candidates:
+        raise ValueError(f"At least one hyperparameter candidate is required for {model_id}.")
+    groups = np.asarray([str(rows[idx]["participant_id"]) for idx in train_indices])
+    unique_groups = sorted(set(groups))
+    if len(unique_groups) < 2:
+        return candidates[0], {_parameter_key(candidates[0]): math.nan}
+
+    splitter = GroupKFold(n_splits=min(3, len(unique_groups)))
+    x_all = _matrix(rows, train_indices, feature_names)
+    y_all = np.asarray([float(rows[idx]["target_cycle_length"]) for idx in train_indices])
+    mean_mae: dict[str, float] = {}
+
+    for candidate in candidates:
+        fold_mae: list[float] = []
+        for inner_train, inner_validation in splitter.split(x_all, y_all, groups=groups):
+            model = _pipeline(model_id, candidate, seed)
+            model.fit(x_all[inner_train], y_all[inner_train])
+            predictions = model.predict(x_all[inner_validation])
+            fold_mae.append(float(np.mean(np.abs(predictions - y_all[inner_validation]))))
+        mean_mae[_parameter_key(candidate)] = statistics.mean(fold_mae)
+
+    selected = min(candidates, key=lambda item: mean_mae[_parameter_key(item)])
+    return selected, mean_mae
 
 
 def select_ridge_alpha(
@@ -103,32 +224,12 @@ def select_ridge_alpha(
     feature_names: list[str],
     alphas: Iterable[float] = DEFAULT_RIDGE_ALPHAS,
 ) -> tuple[float, dict[float, float]]:
-    groups = [str(rows[idx]["participant_id"]) for idx in train_indices]
-    unique_groups = sorted(set(groups))
-    candidates = sorted({float(alpha) for alpha in alphas})
-    if not candidates:
-        raise ValueError("At least one Ridge alpha is required.")
-    if len(unique_groups) < 2:
-        return candidates[-1], {candidates[-1]: math.nan}
-
-    inner_splits = min(3, len(unique_groups))
-    splitter = GroupKFold(n_splits=inner_splits)
-    x_all = _matrix(rows, train_indices, feature_names)
-    y_all = np.asarray([float(rows[idx]["target_cycle_length"]) for idx in train_indices])
-    group_array = np.asarray(groups)
-    mean_mae: dict[float, float] = {}
-
-    for alpha in candidates:
-        fold_mae: list[float] = []
-        for inner_train, inner_validation in splitter.split(x_all, y_all, groups=group_array):
-            model = _pipeline(alpha)
-            model.fit(x_all[inner_train], y_all[inner_train])
-            predictions = model.predict(x_all[inner_validation])
-            fold_mae.append(float(np.mean(np.abs(predictions - y_all[inner_validation]))))
-        mean_mae[alpha] = statistics.mean(fold_mae)
-
-    selected = min(candidates, key=lambda alpha: (mean_mae[alpha], -alpha))
-    return selected, mean_mae
+    candidates = default_model_grids(alphas)["ridge"]
+    selected, scores = select_model_parameters(
+        rows, train_indices, feature_names, "ridge", candidates
+    )
+    by_alpha = {float(json.loads(key)["alpha"]): value for key, value in scores.items()}
+    return float(selected["alpha"]), by_alpha
 
 
 def compute_metrics(y_true: list[float], y_pred: list[float]) -> dict[str, float]:
@@ -159,53 +260,75 @@ def _percentile(values: list[float], quantile: float) -> float:
     return ordered[lower] * (1.0 - weight) + ordered[upper] * weight
 
 
+def _result_key(row: dict[str, Any]) -> tuple[str, str]:
+    return str(row.get("model", "ridge")), str(row["track"])
+
+
 def participant_bootstrap_mae(
     predictions: list[dict[str, Any]],
-    reference_track: str = "history_only",
+    primary_reference: tuple[str, str] = ("ridge", "history_only"),
     replicates: int = DEFAULT_BOOTSTRAP_REPLICATES,
     seed: int = DEFAULT_RANDOM_SEED,
-) -> dict[str, dict[str, float]]:
-    errors: dict[str, dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
+) -> dict[tuple[str, str], dict[str, float]]:
+    errors: dict[tuple[str, str], dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
     for row in predictions:
-        errors[str(row["track"])][str(row["participant_id"])].append(abs(float(row["error_days"])))
+        errors[_result_key(row)][str(row["participant_id"])].append(abs(float(row["error_days"])))
 
-    tracks = sorted(errors)
-    participants = sorted(errors.get(reference_track, {}))
+    if primary_reference not in errors:
+        primary_reference = next((key for key in errors if key[1] == "history_only"), next(iter(errors), primary_reference))
+    participants = sorted(errors.get(primary_reference, {}))
     if not participants:
         return {}
+
+    keys = sorted(errors)
+    references = {
+        key: (key[0], "history_only") if (key[0], "history_only") in errors else primary_reference
+        for key in keys
+    }
+    ridge_references = {
+        key: ("ridge", key[1]) if ("ridge", key[1]) in errors else primary_reference
+        for key in keys
+    }
     rng = random.Random(seed)
-    bootstrap_mae: dict[str, list[float]] = {track: [] for track in tracks}
-    bootstrap_delta: dict[str, list[float]] = {track: [] for track in tracks}
+    bootstrap_mae: dict[tuple[str, str], list[float]] = {key: [] for key in keys}
+    bootstrap_delta: dict[tuple[str, str], list[float]] = {key: [] for key in keys}
+    bootstrap_model_delta: dict[tuple[str, str], list[float]] = {key: [] for key in keys}
 
     for _ in range(replicates):
         sampled = [rng.choice(participants) for _ in participants]
-        replicate_values: dict[str, float] = {}
-        for track in tracks:
+        replicate_values: dict[tuple[str, str], float] = {}
+        for key in keys:
             sampled_errors = [
                 error
                 for participant in sampled
-                for error in errors[track].get(participant, [])
+                for error in errors[key].get(participant, [])
             ]
-            replicate_values[track] = statistics.mean(sampled_errors) if sampled_errors else math.nan
-            bootstrap_mae[track].append(replicate_values[track])
-        reference_mae = replicate_values[reference_track]
-        for track in tracks:
-            bootstrap_delta[track].append(replicate_values[track] - reference_mae)
+            replicate_values[key] = statistics.mean(sampled_errors) if sampled_errors else math.nan
+            bootstrap_mae[key].append(replicate_values[key])
+        for key in keys:
+            bootstrap_delta[key].append(replicate_values[key] - replicate_values[references[key]])
+            bootstrap_model_delta[key].append(
+                replicate_values[key] - replicate_values[ridge_references[key]]
+            )
 
-    intervals: dict[str, dict[str, float]] = {}
-    for track in tracks:
-        intervals[track] = {
-            "mae_ci_low": _percentile(bootstrap_mae[track], 0.025),
-            "mae_ci_high": _percentile(bootstrap_mae[track], 0.975),
-            "delta_mae_ci_low": _percentile(bootstrap_delta[track], 0.025),
-            "delta_mae_ci_high": _percentile(bootstrap_delta[track], 0.975),
+    return {
+        key: {
+            "mae_ci_low": _percentile(bootstrap_mae[key], 0.025),
+            "mae_ci_high": _percentile(bootstrap_mae[key], 0.975),
+            "delta_mae_ci_low": _percentile(bootstrap_delta[key], 0.025),
+            "delta_mae_ci_high": _percentile(bootstrap_delta[key], 0.975),
+            "delta_mae_vs_ridge_ci_low": _percentile(bootstrap_model_delta[key], 0.025),
+            "delta_mae_vs_ridge_ci_high": _percentile(bootstrap_model_delta[key], 0.975),
         }
-    return intervals
+        for key in keys
+    }
 
 
 def evaluate_feature_table(
     feature_table: FeatureTable,
     ridge_alphas: Iterable[float] = DEFAULT_RIDGE_ALPHAS,
+    model_ids: Iterable[str] = DEFAULT_MODEL_IDS,
+    model_grids: dict[str, list[dict[str, Any]]] | None = None,
     bootstrap_replicates: int = DEFAULT_BOOTSTRAP_REPLICATES,
     random_seed: int = DEFAULT_RANDOM_SEED,
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], list[dict[str, Any]]]:
@@ -215,6 +338,12 @@ def evaluate_feature_table(
     folds = group_kfold_indices(rows)
     assert_participant_disjoint(rows, folds)
     tracks = feature_tracks(feature_table)
+    grids = model_grids or default_model_grids(ridge_alphas)
+    requested_models = [str(model_id) for model_id in model_ids]
+    unknown = [model_id for model_id in requested_models if model_id not in grids]
+    if unknown:
+        raise ValueError(f"No tuning grid configured for: {', '.join(unknown)}")
+
     fold_scores: list[dict[str, Any]] = []
     predictions: list[dict[str, Any]] = []
 
@@ -222,77 +351,91 @@ def evaluate_feature_table(
         y_train = [float(rows[idx]["target_cycle_length"]) for idx in train_indices]
         y_test = [float(rows[idx]["target_cycle_length"]) for idx in test_indices]
         median_pred = median(y_train)
-        track_predictions: dict[str, list[float]] = {
-            "global_median": [median_pred for _ in test_indices],
-            "previous_cycle": [float(rows[idx]["history_previous_cycle_length"]) for idx in test_indices],
+        fold_predictions: dict[tuple[str, str], list[float]] = {
+            ("baseline", "global_median"): [median_pred for _ in test_indices],
+            ("baseline", "previous_cycle"): [
+                float(rows[idx]["history_previous_cycle_length"]) for idx in test_indices
+            ],
         }
 
-        for track_name, feature_names in tracks.items():
-            available_features = [
-                name
-                for name in feature_names
-                if any(not math.isnan(_as_float(rows[idx].get(name))) for idx in train_indices)
-            ]
-            selected_alpha: float | str = ""
-            inner_mae: dict[float, float] = {}
-            if not available_features:
-                track_predictions[track_name] = [median_pred for _ in test_indices]
-                model_name = "training_fold_median_fallback"
-            else:
-                selected_alpha, inner_mae = select_ridge_alpha(
-                    rows, train_indices, available_features, ridge_alphas
+        for model_id in requested_models:
+            for track_name, feature_names in tracks.items():
+                available_features = [
+                    name
+                    for name in feature_names
+                    if any(not math.isnan(_as_float(rows[idx].get(name))) for idx in train_indices)
+                ]
+                selected: dict[str, Any] = {}
+                inner_mae: dict[str, float] = {}
+                estimator = "training_fold_median_fallback"
+                if available_features:
+                    selected, inner_mae = select_model_parameters(
+                        rows,
+                        train_indices,
+                        available_features,
+                        model_id,
+                        grids[model_id],
+                        seed=random_seed,
+                    )
+                    model = _pipeline(model_id, selected, random_seed)
+                    model.fit(_matrix(rows, train_indices, available_features), np.asarray(y_train))
+                    predicted = model.predict(_matrix(rows, test_indices, available_features))
+                    fold_predictions[(model_id, track_name)] = [float(value) for value in predicted]
+                    estimator = f"{model_id}_nested_group_cv"
+                else:
+                    fold_predictions[(model_id, track_name)] = [median_pred for _ in test_indices]
+
+                metrics = compute_metrics(y_test, fold_predictions[(model_id, track_name)])
+                fold_scores.append(
+                    {
+                        "fold": fold_number,
+                        "model": model_id,
+                        "model_label": MODEL_LABELS[model_id],
+                        "track": track_name,
+                        "estimator": estimator,
+                        "n_train": len(train_indices),
+                        "n_test": len(test_indices),
+                        "n_train_participants": len({rows[idx]["participant_id"] for idx in train_indices}),
+                        "n_test_participants": len({rows[idx]["participant_id"] for idx in test_indices}),
+                        "feature_count": len(available_features),
+                        "selected_hyperparameters": _parameter_key(selected) if selected else "",
+                        "selected_alpha": selected.get("alpha", ""),
+                        "inner_cv_mae_by_candidate": json.dumps(inner_mae, sort_keys=True),
+                        "features_used": ";".join(available_features),
+                        **metrics,
+                    }
                 )
-                model = _pipeline(float(selected_alpha))
-                model.fit(_matrix(rows, train_indices, available_features), np.asarray(y_train))
-                predicted = model.predict(_matrix(rows, test_indices, available_features))
-                track_predictions[track_name] = [float(value) for value in predicted]
-                model_name = "ridge_nested_group_cv"
 
-            metrics = compute_metrics(y_test, track_predictions[track_name])
+        for track_name in ("global_median", "previous_cycle"):
+            metrics = compute_metrics(y_test, fold_predictions[("baseline", track_name)])
             fold_scores.append(
                 {
                     "fold": fold_number,
+                    "model": "baseline",
+                    "model_label": MODEL_LABELS["baseline"],
                     "track": track_name,
-                    "model": model_name,
-                    "n_train": len(train_indices),
-                    "n_test": len(test_indices),
-                    "n_train_participants": len({rows[idx]["participant_id"] for idx in train_indices}),
-                    "n_test_participants": len({rows[idx]["participant_id"] for idx in test_indices}),
-                    "feature_count": len(available_features),
-                    "selected_alpha": selected_alpha,
-                    "inner_cv_mae_by_alpha": ";".join(
-                        f"{alpha:g}:{score:.6f}" for alpha, score in sorted(inner_mae.items())
-                    ),
-                    "features_used": ";".join(available_features),
-                    **metrics,
-                }
-            )
-
-        for track_name in ["global_median", "previous_cycle"]:
-            metrics = compute_metrics(y_test, track_predictions[track_name])
-            fold_scores.append(
-                {
-                    "fold": fold_number,
-                    "track": track_name,
-                    "model": "training_fold_median" if track_name == "global_median" else "previous_cycle_length",
+                    "estimator": "training_fold_median" if track_name == "global_median" else "previous_cycle_length",
                     "n_train": len(train_indices),
                     "n_test": len(test_indices),
                     "n_train_participants": len({rows[idx]["participant_id"] for idx in train_indices}),
                     "n_test_participants": len({rows[idx]["participant_id"] for idx in test_indices}),
                     "feature_count": 0,
+                    "selected_hyperparameters": "",
                     "selected_alpha": "",
-                    "inner_cv_mae_by_alpha": "",
+                    "inner_cv_mae_by_candidate": "",
                     "features_used": "",
                     **metrics,
                 }
             )
 
-        for track_name, predicted_values in track_predictions.items():
+        for (model_id, track_name), predicted_values in fold_predictions.items():
             for idx, predicted in zip(test_indices, predicted_values):
                 row = rows[idx]
                 predictions.append(
                     {
                         "fold": fold_number,
+                        "model": model_id,
+                        "model_label": MODEL_LABELS[model_id],
                         "track": track_name,
                         "example_id": row["example_id"],
                         "participant_id": row["participant_id"],
@@ -306,48 +449,73 @@ def evaluate_feature_table(
                     }
                 )
 
+    primary_reference = ("ridge", "history_only")
     intervals = participant_bootstrap_mae(
         predictions,
+        primary_reference=primary_reference,
         replicates=bootstrap_replicates,
         seed=random_seed,
     )
-    reference_predictions = [row for row in predictions if row["track"] == "history_only"]
-    reference_mae = compute_metrics(
-        [float(row["observed_cycle_length"]) for row in reference_predictions],
-        [float(row["predicted_cycle_length"]) for row in reference_predictions],
-    )["mae"]
+    grouped_predictions: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    for row in predictions:
+        grouped_predictions[_result_key(row)].append(row)
 
     scores: list[dict[str, Any]] = []
-    for track in sorted({str(row["track"]) for row in predictions}):
-        track_rows = [row for row in predictions if row["track"] == track]
-        y_true = [float(row["observed_cycle_length"]) for row in track_rows]
-        y_pred = [float(row["predicted_cycle_length"]) for row in track_rows]
+    for key, result_rows in grouped_predictions.items():
+        model_id, track = key
+        y_true = [float(row["observed_cycle_length"]) for row in result_rows]
+        y_pred = [float(row["predicted_cycle_length"]) for row in result_rows]
         metrics = compute_metrics(y_true, y_pred)
+        reference_key = (
+            (model_id, "history_only")
+            if (model_id, "history_only") in grouped_predictions
+            else primary_reference
+        )
+        reference_rows = grouped_predictions[reference_key]
+        reference_mae = compute_metrics(
+            [float(row["observed_cycle_length"]) for row in reference_rows],
+            [float(row["predicted_cycle_length"]) for row in reference_rows],
+        )["mae"]
+        ridge_reference_key = (
+            ("ridge", track) if ("ridge", track) in grouped_predictions else primary_reference
+        )
+        ridge_reference_rows = grouped_predictions[ridge_reference_key]
+        ridge_reference_mae = compute_metrics(
+            [float(row["observed_cycle_length"]) for row in ridge_reference_rows],
+            [float(row["predicted_cycle_length"]) for row in ridge_reference_rows],
+        )["mae"]
         scores.append(
             {
+                "model": model_id,
+                "model_label": MODEL_LABELS[model_id],
                 "track": track,
-                "n": len(track_rows),
+                "reference_model": reference_key[0],
+                "reference_track": reference_key[1],
+                "n": len(result_rows),
                 **metrics,
                 "delta_mae_vs_history": metrics["mae"] - reference_mae,
-                **intervals.get(track, {}),
+                "delta_mae_vs_ridge_same_track": metrics["mae"] - ridge_reference_mae,
+                **intervals.get(key, {}),
             }
         )
-    scores.sort(key=lambda row: float(row["mae"]))
+
+    model_order = {model_id: index for index, model_id in enumerate((*requested_models, "baseline"))}
+    scores.sort(key=lambda row: (model_order.get(str(row["model"]), 99), float(row["mae"])))
     return scores, fold_scores, predictions
 
 
 def write_csv(path: str | Path, rows: list[dict[str, Any]]) -> None:
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
     if not rows:
-        path.write_text("")
+        destination.write_text("")
         return
     fieldnames: list[str] = []
     for row in rows:
         for key in row:
             if key not in fieldnames:
                 fieldnames.append(key)
-    with path.open("w", newline="") as handle:
+    with destination.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:

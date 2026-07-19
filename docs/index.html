@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore participant-disjoint next-cycle length benchmark results across models and multimodal feature tracks.">
+  <title>mcPHASES CycleBench Results</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="masthead">
+    <div>
+      <p class="context">Participant-disjoint next-cycle forecasting</p>
+      <h1>mcPHASES CycleBench</h1>
+    </div>
+    <span class="protocol" id="protocol">Protocol</span>
+  </header>
+
+  <main>
+    <section class="summary-band" aria-label="Benchmark cohort">
+      <div><strong id="participants">-</strong><span>Participants</span></div>
+      <div><strong id="cycles">-</strong><span>Complete cycles</span></div>
+      <div><strong id="examples">-</strong><span>Eligible examples</span></div>
+      <p id="finding">Loading aggregate benchmark results...</p>
+    </section>
+
+    <section class="explorer" aria-labelledby="explorer-title">
+      <div class="section-heading">
+        <div>
+          <p class="context">Aggregate out-of-fold results</p>
+          <h2 id="explorer-title">Model and modality comparison</h2>
+        </div>
+        <div class="view-tabs" role="tablist" aria-label="Result view">
+          <button type="button" class="tab active" data-view="ranking" role="tab" aria-selected="true">Ranked</button>
+          <button type="button" class="tab" data-view="heatmap" role="tab" aria-selected="false">Matrix</button>
+        </div>
+      </div>
+
+      <div class="controls" aria-label="Chart controls">
+        <fieldset>
+          <legend>Model</legend>
+          <div class="segmented" id="model-control"></div>
+        </fieldset>
+        <label class="select-control">
+          <span>Metric</span>
+          <select id="metric-control">
+            <option value="mae">MAE</option>
+            <option value="rmse">RMSE</option>
+            <option value="median_absolute_error">Median absolute error</option>
+            <option value="within_3_days_pct">Within 3 days</option>
+            <option value="within_7_days_pct">Within 7 days</option>
+            <option value="mean_signed_error">Mean signed error</option>
+          </select>
+        </label>
+        <label class="switch-control">
+          <input type="checkbox" id="delta-control">
+          <span>Difference from history</span>
+        </label>
+        <label class="switch-control">
+          <input type="checkbox" id="ci-control" checked>
+          <span>MAE intervals</span>
+        </label>
+        <label class="switch-control">
+          <input type="checkbox" id="baseline-control" checked>
+          <span>Baselines</span>
+        </label>
+      </div>
+
+      <fieldset class="track-filter">
+        <legend>Feature tracks</legend>
+        <div id="track-control"></div>
+      </fieldset>
+
+      <div class="chart-frame" id="chart-frame">
+        <div class="chart-meta">
+          <strong id="chart-title">Mean absolute error</strong>
+          <span id="chart-direction">Lower is better</span>
+        </div>
+        <svg id="chart" role="img" aria-labelledby="chart-title"></svg>
+        <p class="chart-note" id="chart-note"></p>
+      </div>
+
+      <div class="result-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Feature track</th>
+              <th id="metric-column">MAE</th>
+              <th>MAE 95% CI</th>
+              <th>MAE delta vs history</th>
+              <th>Within 7 days</th>
+            </tr>
+          </thead>
+          <tbody id="result-table"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="method-band" id="method">
+      <div>
+        <p class="context">Evaluation design</p>
+        <h2>Every held-out prediction comes from a participant-disjoint fold.</h2>
+      </div>
+      <dl>
+        <div><dt>Outer evaluation</dt><dd>5-fold GroupKFold by participant</dd></div>
+        <div><dt>Model selection</dt><dd>Inner participant-disjoint MAE</dd></div>
+        <div><dt>Uncertainty</dt><dd>2,000 participant-clustered bootstrap replicates</dd></div>
+        <div><dt>Temporal boundary</dt><dd>Features end before the target cycle starts</dd></div>
+      </dl>
+    </section>
+
+    <section class="limitations">
+      <h2>Scope and limitations</h2>
+      <p>Cycle boundaries are inferred from self-report. The eligible cohort is small, modality coverage is unequal, and results have no external or prospective validation.</p>
+      <p>This is an exploratory research benchmark. It is not intended for diagnosis, fertility planning, treatment, individual guidance, or perimenopause prediction.</p>
+    </section>
+  </main>
+
+  <footer>
+    <span>mcPHASES CycleBench</span>
+    <a href="https://physionet.org/content/mcphases/1.0.0/">Dataset access</a>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>

@@ -79,3 +79,6 @@ Raw data and generated participant-level files are ignored by Git. OpenAI
 summarization accepts only `benchmark_summary.json`, which contains aggregate
 cohort counts, coverage, model metrics, and uncertainty intervals. It rejects
 participant IDs, example IDs, dates, and predictions.
+
+The static results explorer uses the same validated aggregate summary. It does
+not contain participant-level rows or make network requests to a model API.

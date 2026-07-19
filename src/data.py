@@ -42,7 +42,7 @@ class LoadedData:
     flow_rows: list[dict[str, Any]]
     measurements: dict[tuple[str, str, int], dict[str, list[float]]]
     tables_used: dict[str, list[str]]
-    table_rows: dict[str, int]
+    table_rows: dict[str, int | None]
     table_columns: dict[str, list[str]]
 
 
@@ -113,14 +113,13 @@ def find_data_dir(data_dir: str | Path) -> Path:
     )
 
 
-def _read_header_and_count(path: Path) -> tuple[list[str], int]:
+def _read_header(path: Path) -> list[str]:
     with path.open(newline="") as handle:
         reader = csv.reader(handle)
         try:
-            header = next(reader)
+            return next(reader)
         except StopIteration:
-            return [], 0
-        return header, sum(1 for _ in reader)
+            return []
 
 
 def _add_measurement(
@@ -143,20 +142,21 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
     flow_rows: list[dict[str, Any]] = []
     measurements: dict[tuple[str, str, int], dict[str, list[float]]] = defaultdict(lambda: defaultdict(list))
     tables_used: dict[str, list[str]] = defaultdict(list)
-    table_rows: dict[str, int] = {}
+    table_rows: dict[str, int | None] = {}
     table_columns: dict[str, list[str]] = {}
 
     for csv_path in sorted(base.glob("*.csv")):
-        header, row_count = _read_header_and_count(csv_path)
-        table_rows[csv_path.name] = row_count
-        table_columns[csv_path.name] = header
+        table_rows[csv_path.name] = None
+        table_columns[csv_path.name] = _read_header(csv_path)
 
     hormone_path = base / "hormones_and_selfreport.csv"
     if not hormone_path.exists():
         raise FileNotFoundError(f"Missing required table: {hormone_path}")
 
+    table_rows[hormone_path.name] = 0
     with hormone_path.open(newline="") as handle:
         for row in csv.DictReader(handle):
+            table_rows[hormone_path.name] += 1
             pid = normalize_id(row.get("id"))
             interval = normalize_interval(row.get("study_interval"))
             day = safe_int(row.get("day_in_study"))
@@ -205,6 +205,7 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     sleep_path = base / "sleep.csv"
     if sleep_path.exists():
+        table_rows[sleep_path.name] = 0
         sleep_metrics = {
             "minutesasleep": "sleep_minutes_asleep",
             "minutesawake": "sleep_minutes_awake",
@@ -213,6 +214,7 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
         }
         with sleep_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[sleep_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("sleep_end_day_in_study") or row.get("sleep_start_day_in_study"))
@@ -223,8 +225,10 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     rhr_path = base / "resting_heart_rate.csv"
     if rhr_path.exists():
+        table_rows[rhr_path.name] = 0
         with rhr_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[rhr_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("day_in_study"))
@@ -234,8 +238,10 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     active_path = base / "active_minutes.csv"
     if active_path.exists():
+        table_rows[active_path.name] = 0
         with active_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[active_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("day_in_study"))
@@ -248,9 +254,11 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     steps_path = base / "steps.csv"
     if steps_path.exists():
+        table_rows[steps_path.name] = 0
         daily_steps: dict[tuple[str, str, int], float] = defaultdict(float)
         with steps_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[steps_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("day_in_study"))
@@ -264,9 +272,11 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     glucose_path = base / "glucose.csv"
     if glucose_path.exists():
+        table_rows[glucose_path.name] = 0
         used_glucose = False
         with glucose_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[glucose_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("day_in_study"))
@@ -278,9 +288,11 @@ def load_mcphases_data(data_dir: str | Path) -> LoadedData:
 
     stress_path = base / "stress_score.csv"
     if stress_path.exists():
+        table_rows[stress_path.name] = 0
         used_stress = False
         with stress_path.open(newline="") as handle:
             for row in csv.DictReader(handle):
+                table_rows[stress_path.name] += 1
                 pid = normalize_id(row.get("id"))
                 interval = normalize_interval(row.get("study_interval"))
                 day = safe_int(row.get("day_in_study"))

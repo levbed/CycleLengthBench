@@ -35,12 +35,16 @@ Unavailable variables and unavailable optional tracks are skipped and reported.
 
 - Training-fold median baseline.
 - Previous-cycle baseline.
-- Scikit-learn Ridge regression.
-- Median imputation and standard scaling in a scikit-learn `Pipeline`.
-- Ridge `alpha` selected from `0.1, 1, 10, 100` using inner
+- Ridge regression as the primary linear analysis.
+- RBF support vector regression and `HistGradientBoostingRegressor` as
+  nonlinear sensitivity analyses.
+- Training-fold median imputation for every trained model and standard scaling
+  for Ridge and RBF-SVR.
+- Model-specific fixed hyperparameter grids selected by MAE using inner
   participant-disjoint GroupKFold.
+- Boosting uses fixed iteration counts with automatic early stopping disabled.
 
-Feature availability, imputation, scaling, alpha selection, and model fitting
+Feature availability, imputation, scaling, parameter selection, and model fitting
 occur without access to the outer test fold.
 
 ## Evaluation
@@ -66,30 +70,26 @@ occur without access to the outer test fold.
 Automated tests enforce participant separation, temporal boundaries, aggregate
 OpenAI payload safety, and the use of `store=False` for OpenAI requests.
 
-## v1.1 Aggregate Results
+## v2.0 Aggregate Results
 
 Local evaluation of mcPHASES v1.0.0 produced 82 examples from 42 participants
 and 142 inferred complete cycles.
 
-| Track | MAE (95% CI) | Delta MAE vs history (95% CI) | Within 7 days |
-| --- | ---: | ---: | ---: |
-| `history_only` | 4.84 (3.57, 6.23) | 0.000 (0.000, 0.000) | 76.8% |
-| `history_plus_hormones` | 5.17 (3.91, 6.59) | +0.334 (+0.002, +0.649) | 73.2% |
-| `history_plus_glucose_stress` | 5.23 (3.95, 6.66) | +0.390 (+0.039, +0.826) | 72.0% |
-| `history_plus_symptoms` | 5.28 (3.97, 6.72) | +0.439 (+0.104, +0.816) | 74.4% |
-| `global_median` | 5.29 (3.60, 7.24) | +0.452 (-0.308, +1.235) | 78.0% |
-| `history_plus_wearables` | 5.39 (3.86, 7.14) | +0.551 (-0.345, +1.724) | 74.4% |
-| `previous_cycle` | 5.68 (4.47, 7.21) | +0.842 (-0.577, +2.107) | 70.7% |
-| `full_multimodal` | 5.83 (4.38, 7.51) | +0.994 (+0.117, +2.164) | 68.3% |
+| Model | History | + Hormones | + Wearables | + Symptoms | + Glucose/stress | Full |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Ridge | 4.84 | 5.17 | 5.39 | 5.28 | 5.23 | 5.83 |
+| RBF-SVR | **4.54** | 4.95 | 4.81 | 4.90 | 4.80 | 4.92 |
+| HistGradientBoosting | 4.73 | 5.10 | 5.24 | 5.27 | 5.01 | 5.38 |
 
-No added modality improved over history-only in this evaluation. Hormone,
-glucose/stress, symptom, and full-multimodal tracks had participant-bootstrap
-intervals for MAE difference above zero. The wearable comparison was
-inconclusive. These are benchmark comparisons, not causal or clinical findings.
+No added modality improved over history-only within its model family. RBF-SVR
+history-only had the lowest point estimate, but its paired MAE difference from
+Ridge history-only was inconclusive. These are benchmark comparisons, not
+causal or clinical findings.
 
 ## Outputs
 
 The pipeline writes aggregate scores, fold diagnostics, participant-level
 predictions, aggregate reports, and plots. Generated outputs remain ignored by
-default. Only aggregate figures intentionally copied into documentation should
-be committed.
+default. `export-public` validates the aggregate summary before it is copied to
+the static explorer. Only that artifact and aggregate figures should be
+committed.

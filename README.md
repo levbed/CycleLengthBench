@@ -2,11 +2,12 @@
 
 mcPHASES CycleBench is a participant-disjoint benchmark for next-cycle length
 forecasting. It tests whether hormone, wearable, symptom, glucose, or stress
-summaries improve prediction beyond simple menstrual-history baselines.
+summaries improve prediction beyond simple menstrual-history baselines and
+whether nonlinear models change that conclusion.
 
-The project is a reusable research benchmark, not a clinical application. It is
-exploratory and is not intended for diagnosis, fertility planning, treatment,
-individual guidance, or perimenopause prediction.
+The project is an exploratory research benchmark, not a clinical application.
+It is not intended for diagnosis, fertility planning, treatment, individual
+guidance, or perimenopause prediction.
 
 ## Research Question
 
@@ -25,7 +26,8 @@ repository does not redistribute raw data or participant-level derived outputs.
 The MIT license applies to CycleBench code, not to mcPHASES data.
 
 The loader accepts a directory containing `hormones_and_selfreport.csv`, or a
-parent containing exactly one extracted release directory. See
+parent containing exactly one extracted release directory. It reads headers for
+all CSV tables but scans rows only for tables used by the benchmark. See
 [`DATA_CARD.md`](DATA_CARD.md) for tables, transformations, licensing, and
 limitations. Cite the source dataset using DOI `10.13026/zx6a-2c81`.
 
@@ -47,7 +49,7 @@ source_start_day <= feature_day < target_start_day
 The target-cycle end is used only to calculate the label. It is never a model
 feature.
 
-## Benchmark Tracks
+## Feature Tracks
 
 - `global_median`: target median fitted on the outer training fold.
 - `previous_cycle`: complete source-cycle length.
@@ -60,28 +62,34 @@ feature.
 - `history_plus_glucose_stress`: history plus CGM and Fitbit stress summaries.
 - `full_multimodal`: all available feature families.
 
-Every measured variable receives mean, maximum, standard deviation, count, and
-source-cycle coverage summaries. Unavailable variables and optional tracks are
-skipped automatically and reported.
+Each measured variable contributes its mean, maximum, standard deviation,
+observation count, and source-cycle day coverage. Unavailable variables and
+optional tracks are skipped automatically and reported.
 
-## Participant-Safe Evaluation
+## Models And Evaluation
 
-The outer evaluation uses scikit-learn `GroupKFold`, grouped by participant ID.
-Five folds are used when feasible, otherwise three. Ridge regression is fitted
-inside a pipeline with training-fold median imputation and standard scaling.
+The primary analysis is Ridge regression. RBF-SVR and
+`HistGradientBoostingRegressor` are pre-specified nonlinear sensitivity
+analyses. The two simple baselines are evaluated on the same outer folds.
 
-Ridge `alpha` is selected from `0.1, 1, 10, 100` using an inner
-participant-disjoint GroupKFold. No outer-test participant is used for feature
-availability, preprocessing, tuning, or training.
+Every trained model uses nested participant-disjoint cross-validation:
+
+- Outer `GroupKFold` by participant, with five folds when feasible.
+- Inner `GroupKFold` by participant, selecting hyperparameters by MAE.
+- Training-fold median imputation for every model.
+- Standard scaling inside the Ridge and RBF-SVR pipelines.
+- Conservative fixed grids for Ridge regularization, RBF-SVR `C` and
+  `epsilon`, and boosted-tree complexity and regularization.
+- No automatic boosting early stopping or preprocessing outside training data.
 
 The benchmark reports MAE, RMSE, median absolute error, percentage within 3 and
-7 days, mean signed error, paired MAE difference versus history, and 95%
-participant-clustered bootstrap intervals. See
-[`BENCHMARK_CARD.md`](BENCHMARK_CARD.md) for the full protocol.
+7 days, mean signed error, paired MAE differences, and 95% participant-clustered
+bootstrap intervals. See [`BENCHMARK_CARD.md`](BENCHMARK_CARD.md) for the full
+protocol.
 
 ## Installation
 
-Python 3.10 or newer is required. A local environment is recommended:
+Python 3.10 or newer is required:
 
 ```bash
 python3 -m venv .venv
@@ -89,22 +97,64 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-The `inspect` command uses only Python's standard library. Model evaluation and
-plotting require the dependencies above. You can also run them without
-activating the environment by replacing `python` with `.venv/bin/python` in the
-commands below.
+The `inspect` command uses only Python's standard library. Evaluation and
+plotting require the installed dependencies.
 
 ## Reproduction
 
-Replace `/path/to/mcphases` with the extracted local dataset directory.
+Replace `/path/to/mcphases` with the extracted local dataset directory:
 
 ```bash
-python run_benchmark.py inspect --data-dir /path/to/mcphases
+python3 run_benchmark.py inspect --data-dir /path/to/mcphases
+
+source .venv/bin/activate
 python run_benchmark.py evaluate --data-dir /path/to/mcphases
 python -m unittest discover -s tests -v
 ```
 
 Global options such as `--output-dir` must appear before the subcommand.
+
+## Aggregate Results
+
+The verified mcPHASES v1.0.0 run found 42 participants, 142 inferred complete
+cycles, and 82 eligible examples. MAE values are days:
+
+| Model | History | + Hormones | + Wearables | + Symptoms | + Glucose/stress | Full |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Ridge | 4.84 | 5.17 | 5.39 | 5.28 | 5.23 | 5.83 |
+| RBF-SVR | **4.54** | 4.95 | 4.81 | 4.90 | 4.80 | 4.92 |
+| HistGradientBoosting | 4.73 | 5.10 | 5.24 | 5.27 | 5.01 | 5.38 |
+
+The global-median and previous-cycle baselines had MAE 5.29 and 5.68 days.
+RBF-SVR history-only had the lowest point MAE, but its paired difference from
+Ridge history-only was inconclusive: -0.301 days with a 95% participant
+bootstrap interval of -0.975 to 0.358. No added modality improved over the
+corresponding model's history-only track. RBF-SVR improved over Ridge on the
+full-multimodal track, but RBF-SVR full multimodal did not improve over RBF-SVR
+history-only.
+
+![Model-by-track MAE](docs/figures/model_track_heatmap.png)
+
+![Nonlinear comparison with Ridge](docs/figures/model_delta_vs_ridge.png)
+
+These are benchmark comparisons, not causal or clinical findings.
+
+## Results Explorer
+
+The static explorer reads only a validated aggregate artifact. It contains no
+participant identifiers, dates, predictions, raw measurements, or API keys.
+
+```bash
+python run_benchmark.py export-public \
+  --results-dir results \
+  --output-file docs/data/benchmark_summary.json
+python3 -m http.server 8000 --directory docs
+```
+
+Open `http://localhost:8000`. The explorer supports model and track selection,
+six metrics, absolute and history-relative views, MAE intervals, and a
+model-by-track matrix. The Pages workflow deploys `docs/` after GitHub Pages is
+configured to use GitHub Actions.
 
 ## Outputs
 
@@ -117,37 +167,15 @@ Evaluation writes:
 - `results/benchmark_report.md`
 - `results/mae_by_track.png`
 - `results/mae_delta_vs_history.png`
+- `results/model_track_heatmap.png`
+- `results/model_delta_vs_ridge.png`
 - `results/predicted_vs_observed.png`
 - `results/target_distribution.png`
 
 Generated results are ignored by default. `predictions.csv` and the
 predicted-versus-observed plot are participant-level derived outputs and must
-not be committed.
-
-## Aggregate Results
-
-The verified local mcPHASES v1.0.0 run found 42 participants, 142 inferred
-complete cycles, and 82 eligible examples.
-
-| Track | MAE (95% CI) | Delta vs history (95% CI) | Within 7 days |
-| --- | ---: | ---: | ---: |
-| `history_only` | 4.84 (3.57, 6.23) | 0.000 (0.000, 0.000) | 76.8% |
-| `history_plus_hormones` | 5.17 (3.91, 6.59) | +0.334 (+0.002, +0.649) | 73.2% |
-| `history_plus_glucose_stress` | 5.23 (3.95, 6.66) | +0.390 (+0.039, +0.826) | 72.0% |
-| `history_plus_symptoms` | 5.28 (3.97, 6.72) | +0.439 (+0.104, +0.816) | 74.4% |
-| `global_median` | 5.29 (3.60, 7.24) | +0.452 (-0.308, +1.235) | 78.0% |
-| `history_plus_wearables` | 5.39 (3.86, 7.14) | +0.551 (-0.345, +1.724) | 74.4% |
-| `previous_cycle` | 5.68 (4.47, 7.21) | +0.842 (-0.577, +2.107) | 70.7% |
-| `full_multimodal` | 5.83 (4.38, 7.51) | +0.994 (+0.117, +2.164) | 68.3% |
-
-No added modality improved over history-only in this cohort and protocol.
-Wearables were inconclusive versus history; several higher-dimensional tracks
-had participant-bootstrap intervals indicating higher MAE. This is a benchmark
-comparison, not evidence that a modality lacks biological or clinical value.
-
-![MAE by benchmark track](docs/figures/mae_by_track.png)
-
-![MAE difference versus history-only](docs/figures/mae_delta_vs_history.png)
+not be committed. `export-public` validates and writes the aggregate artifact
+used by the static explorer.
 
 ## Optional OpenAI Report
 
@@ -160,14 +188,15 @@ python run_benchmark.py summarize --results-dir results
 ```
 
 The default model is `gpt-5.6-terra`; override it with `--model`. The request
-uses Structured Outputs and `store=False`. The command reads only
-`benchmark_summary.json` and rejects participant IDs, example IDs, dates, and
-predictions. It never uploads raw mcPHASES data. Outputs are written to
-`results/openai_report.json` and `results/openai_report.md` and remain ignored.
+uses Structured Outputs and `store=False`. It reads only the validated
+aggregate summary and never uploads raw mcPHASES data or participant-level
+predictions.
 
 ## Limitations
 
 Cycle boundaries are inferred rather than adjudicated. The cohort and eligible
-example count are modest, modalities have unequal coverage, and high-dimensional
-tracks remain challenging despite nested regularization. Results lack external
-or prospective validation and should not be generalized beyond this benchmark.
+example count are modest, modalities have unequal coverage, and the same
+dataset supports both model development and evaluation design. The benchmark
+uses source-cycle summaries rather than raw temporal trajectories and has no
+external or prospective validation. Results should not be generalized beyond
+this protocol.

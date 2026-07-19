@@ -45,7 +45,7 @@ def _percentile(values: list[float], quantile: float) -> float:
 
 
 def _evidence_label(score: dict[str, Any]) -> str:
-    if score["track"] == "history_only":
+    if score["track"] == score.get("reference_track") and score["model"] == score.get("reference_model"):
         return "reference"
     lower = float(score.get("delta_mae_ci_low", math.nan))
     upper = float(score.get("delta_mae_ci_high", math.nan))
@@ -90,19 +90,27 @@ def build_benchmark_summary(
 
     track_details: list[dict[str, Any]] = []
     for score in scores:
+        model = str(score["model"])
         track = str(score["track"])
-        folds = [row for row in fold_scores if row["track"] == track]
-        alphas = sorted(
+        folds = [
+            row for row in fold_scores
+            if row["model"] == model and row["track"] == track
+        ]
+        selected_hyperparameters = sorted(
             {
-                float(row["selected_alpha"])
+                str(row["selected_hyperparameters"])
                 for row in folds
-                if row.get("selected_alpha") not in {None, ""}
+                if row.get("selected_hyperparameters") not in {None, ""}
             }
         )
         feature_counts = [int(row.get("feature_count", 0)) for row in folds]
         track_details.append(
             {
+                "model": model,
+                "model_label": str(score["model_label"]),
                 "track": track,
+                "reference_model": str(score["reference_model"]),
+                "reference_track": str(score["reference_track"]),
                 "n": int(score["n"]),
                 "mae": float(score["mae"]),
                 "mae_ci_low": float(score.get("mae_ci_low", math.nan)),
@@ -115,8 +123,17 @@ def build_benchmark_summary(
                 "delta_mae_vs_history": float(score["delta_mae_vs_history"]),
                 "delta_mae_ci_low": float(score.get("delta_mae_ci_low", math.nan)),
                 "delta_mae_ci_high": float(score.get("delta_mae_ci_high", math.nan)),
+                "delta_mae_vs_ridge_same_track": float(
+                    score.get("delta_mae_vs_ridge_same_track", math.nan)
+                ),
+                "delta_mae_vs_ridge_ci_low": float(
+                    score.get("delta_mae_vs_ridge_ci_low", math.nan)
+                ),
+                "delta_mae_vs_ridge_ci_high": float(
+                    score.get("delta_mae_vs_ridge_ci_high", math.nan)
+                ),
                 "evidence": _evidence_label(score),
-                "selected_alphas": alphas,
+                "selected_hyperparameters": selected_hyperparameters,
                 "feature_count_min": min(feature_counts, default=0),
                 "feature_count_max": max(feature_counts, default=0),
             }
@@ -124,6 +141,8 @@ def build_benchmark_summary(
 
     payload = {
         "benchmark": "mcPHASES CycleBench",
+        "protocol_version": "2.0",
+        "dataset_version": "1.0.0",
         "task": "Predict the length in days of cycle t+1 using only information available before it begins.",
         "intended_use": "Exploratory research benchmark; not for diagnosis, fertility planning, treatment, or perimenopause prediction.",
         "cohort_flow": {
@@ -141,7 +160,16 @@ def build_benchmark_summary(
         "evaluation": {
             "outer_split": "participant-disjoint GroupKFold",
             "outer_folds": len({int(row["fold"]) for row in fold_scores}),
-            "ridge_alpha_selection": "inner participant-disjoint GroupKFold over [0.1, 1, 10, 100]",
+            "selection_metric": "inner participant-disjoint GroupKFold MAE",
+            "models": [
+                {"id": "ridge", "label": "Ridge", "role": "primary linear analysis"},
+                {"id": "rbf_svr", "label": "RBF-SVR", "role": "nonlinear sensitivity analysis"},
+                {
+                    "id": "hist_gradient_boosting",
+                    "label": "HistGradientBoosting",
+                    "role": "nonlinear sensitivity analysis",
+                },
+            ],
             "uncertainty": "95% participant-clustered bootstrap intervals with 2,000 replicates",
         },
         "variables_used": feature_table.variables_used,
@@ -181,12 +209,12 @@ def write_markdown_report(path: str | Path, payload: dict[str, Any]) -> None:
         "",
         "## Results",
         "",
-        "| Track | MAE (95% CI) | Delta vs history (95% CI) | Within 7 days | Evidence |",
-        "| --- | ---: | ---: | ---: | --- |",
+        "| Model | Track | MAE (95% CI) | Delta vs model history (95% CI) | Within 7 days | Evidence |",
+        "| --- | --- | ---: | ---: | ---: | --- |",
     ]
     for score in payload["scores"]:
         lines.append(
-            f"| {score['track']} | {score['mae']:.2f} "
+            f"| {score['model_label']} | {score['track']} | {score['mae']:.2f} "
             f"({score['mae_ci_low']:.2f}, {score['mae_ci_high']:.2f}) | "
             f"{score['delta_mae_vs_history']:+.3f} "
             f"({score['delta_mae_ci_low']:+.3f}, {score['delta_mae_ci_high']:+.3f}) | "
@@ -199,7 +227,7 @@ def write_markdown_report(path: str | Path, payload: dict[str, Any]) -> None:
             "",
             f"- Outer split: {payload['evaluation']['outer_split']} "
             f"({payload['evaluation']['outer_folds']} folds)",
-            f"- Ridge tuning: {payload['evaluation']['ridge_alpha_selection']}",
+            f"- Model selection: {payload['evaluation']['selection_metric']}",
             f"- Uncertainty: {payload['evaluation']['uncertainty']}",
             "- Imputation, scaling, feature availability, and model fitting occur inside training folds.",
             "",

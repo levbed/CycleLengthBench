@@ -23,7 +23,8 @@ def _print_summary(summary: dict) -> None:
     print(f"Eligible source/target examples: {summary['eligible_examples']}")
     print("Tables inspected:")
     for table, rows in sorted(summary["table_rows"].items()):
-        print(f"  - {table}: {rows} rows")
+        detail = f"{rows} rows" if rows is not None else "schema only; row count skipped"
+        print(f"  - {table}: {detail}")
     print("Variables used:")
     if summary["tables_used"]:
         for table, variables in sorted(summary["tables_used"].items()):
@@ -58,6 +59,8 @@ def evaluate_command(args: argparse.Namespace) -> None:
     from src.plots import (
         save_delta_mae_vs_history,
         save_mae_by_track,
+        save_model_delta_vs_ridge,
+        save_model_track_heatmap,
         save_predicted_vs_observed,
         save_target_distribution,
     )
@@ -72,6 +75,8 @@ def evaluate_command(args: argparse.Namespace) -> None:
     write_csv(output_dir / "predictions.csv", predictions)
     save_mae_by_track(output_dir / "mae_by_track.png", scores)
     save_delta_mae_vs_history(output_dir / "mae_delta_vs_history.png", scores)
+    save_model_track_heatmap(output_dir / "model_track_heatmap.png", scores)
+    save_model_delta_vs_ridge(output_dir / "model_delta_vs_ridge.png", scores)
     save_predicted_vs_observed(output_dir / "predicted_vs_observed.png", predictions)
     save_target_distribution(
         output_dir / "target_distribution.png",
@@ -84,11 +89,18 @@ def evaluate_command(args: argparse.Namespace) -> None:
     print("Scores:")
     for row in scores:
         print(
-            f"  - {row['track']}: MAE={float(row['mae']):.3f}, "
+            f"  - {row['model_label']} / {row['track']}: MAE={float(row['mae']):.3f}, "
             f"95% CI=({float(row['mae_ci_low']):.3f}, {float(row['mae_ci_high']):.3f}), "
             f"delta_vs_history={float(row['delta_mae_vs_history']):+.3f}, "
             f"within_7_days={float(row['within_7_days_pct']):.1f}%"
         )
+
+
+def export_public_command(args: argparse.Namespace) -> None:
+    source = Path(args.results_dir) / "benchmark_summary.json"
+    payload = load_aggregate_summary(source)
+    write_json(args.output_file, payload)
+    print(f"Saved privacy-checked aggregate artifact to {Path(args.output_file).resolve()}")
 
 
 def summarize_command(args: argparse.Namespace) -> None:
@@ -133,6 +145,14 @@ def build_parser() -> argparse.ArgumentParser:
     summarize.add_argument("--results-dir", default="results")
     summarize.add_argument("--model", default=DEFAULT_OPENAI_MODEL)
     summarize.set_defaults(func=summarize_command)
+
+    export_public = subparsers.add_parser(
+        "export-public",
+        help="Export a validated aggregate summary for static publication.",
+    )
+    export_public.add_argument("--results-dir", default="results")
+    export_public.add_argument("--output-file", default="docs/data/benchmark_summary.json")
+    export_public.set_defaults(func=export_public_command)
     return parser
 
 
