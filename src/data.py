@@ -7,6 +7,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Iterable
 
+from . import BENCHMARK_NAME
+
 
 DEFAULT_MIN_CYCLE_LENGTH = 10
 DEFAULT_MAX_CYCLE_LENGTH = 90
@@ -378,7 +380,7 @@ def summarize_loaded_data(loaded: LoadedData, examples: list[CycleExample]) -> d
     cycle_count = sum(max(0, len(group_starts) - 1) for group_starts in starts.values())
     used_variables = sorted({metric for values in loaded.tables_used.values() for metric in values})
     return {
-        "benchmark": "mcPHASES CycleBench",
+        "benchmark": BENCHMARK_NAME,
         "dataset_id": "mcphases",
         "dataset_version": "1.0.0",
         "dataset_doi": "10.13026/zx6a-2c81",

@@ -1,12 +1,12 @@
 cff-version: 1.2.0
-message: "If you use CycleBench, cite this software and the mcPHASES dataset."
-title: "mcPHASES CycleBench"
+message: "If you use CycleLengthBench, cite this software and each source dataset used in your analysis."
+title: "CycleLengthBench"
 type: software
 authors:
   - family-names: "Bedniagin"
     given-names: "Lev"
-version: 2.0.0
-date-released: 2026-07-18
+version: 2.1.0
+date-released: 2026-07-19
 license: MIT
 keywords:
   - menstrual health
@@ -31,3 +31,12 @@ references:
     year: 2025
     version: 1.0.0
     doi: 10.13026/zx6a-2c81
+  - type: dataset
+    authors:
+      - family-names: "Najmabadi"
+        given-names: "Shahpar"
+      - family-names: "Stanford"
+        given-names: "Joseph"
+    title: "Menstrual Cycles Length of Women in the USA and Canada, 1990-2013"
+    year: 2023
+    doi: 10.7278/S50d-4gxs-s4hj

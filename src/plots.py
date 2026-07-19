@@ -5,7 +5,7 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "mcphases-cyclebench-matplotlib"))
+os.environ.setdefault("MPLCONFIGDIR", str(Path(tempfile.gettempdir()) / "cycle-length-bench-matplotlib"))
 
 import matplotlib
 

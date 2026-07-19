@@ -10,6 +10,7 @@ from datetime import date, datetime, timedelta
 from pathlib import Path
 from typing import Any, Iterable
 
+from . import BENCHMARK_NAME
 from .data import (
     DEFAULT_MAX_CYCLE_LENGTH,
     DEFAULT_MIN_CYCLE_LENGTH,
@@ -234,7 +235,7 @@ def summarize_utah_data(
         if left.cycle_length is not None and right.cycle_length is not None
     ]
     return {
-        "benchmark": "mcPHASES CycleBench: Utah history replication",
+        "benchmark": f"{BENCHMARK_NAME}: Utah history replication",
         "dataset_id": "utah_cycle_length",
         "dataset_version": "repository record accessed by pinned checksum",
         "dataset_doi": UTAH_DATASET_DOI,

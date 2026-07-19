@@ -75,7 +75,7 @@ def summarize_with_openai(
             "verbosity": "low",
             "format": {
                 "type": "json_schema",
-                "name": "cyclebench_report",
+                "name": "cycle_length_bench_report",
                 "strict": True,
                 "schema": REPORT_SCHEMA,
             }

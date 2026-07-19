@@ -1,10 +1,10 @@
-# mcPHASES CycleBench Data Card
+# CycleLengthBench Data Card
 
 ## Sources
 
 ### mcPHASES
 
-CycleBench uses mcPHASES v1.0.0:
+CycleLengthBench uses mcPHASES v1.0.0:
 
 > Lin, B., Li, J. Y., Kalani, K., Truong, K., & Mariakakis, A. (2025).
 > mcPHASES: A Dataset of Physiological, Hormonal, and Self-reported Events and
@@ -29,7 +29,7 @@ The independent history-only replication uses:
 The file contains start and end dates for 3,324 cycles from 581 participants
 across three studies conducted from 1990 to 2013. Its columns are participant
 ID, age, cycle number, start date, end date, cycle length, and conception-cycle
-status. CycleBench uses only participant ID, cycle number, dates, and length.
+status. CycleLengthBench uses only participant ID, cycle number, dates, and length.
 
 ## Access And License
 
@@ -39,7 +39,7 @@ must obtain access directly from PhysioNet and comply with its terms.
 
 This repository does not redistribute mcPHASES files, participant records,
 participant identifiers, or participant-level derived outputs. The repository's
-MIT license applies to CycleBench code and documentation, not to mcPHASES data.
+MIT license applies to CycleLengthBench code and documentation, not to mcPHASES data.
 
 The Utah record is public under CC BY-NC. `download-utah` retrieves its CSV and
 README directly from the official Hive record and validates pinned checksums.
@@ -50,7 +50,7 @@ does not redistribute either dataset or participant-level derived outputs.
 
 ## Tables Used
 
-CycleBench automatically uses available variables from:
+CycleLengthBench automatically uses available variables from:
 
 | Source table | Variables |
 | --- | --- |
@@ -109,7 +109,7 @@ For Utah:
 - Hormone and sensor coverage differs across participants and cycles.
 - Ordinal self-report mappings assume consistent interpretation of response
   categories.
-- CycleBench does not establish clinical validity or causal relationships.
+- CycleLengthBench does not establish clinical validity or causal relationships.
 - The Utah source selected participants with regular menstrual bleeding and
   does not provide the modalities needed to replicate multimodal tracks.
 - Differences in collection period, population, cycle adjudication, and

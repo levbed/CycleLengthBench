@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
+from src import BENCHMARK_NAME, PROTOCOL_VERSION
 from src.cohorts import (
     UTAH_RECORD_URL,
     add_cohort,
@@ -188,8 +189,8 @@ def evaluate_all_command(args: argparse.Namespace) -> None:
     write_json(
         root / "multicohort_summary.json",
         {
-            "benchmark": "mcPHASES CycleBench",
-            "protocol_version": "2.1",
+            "benchmark": BENCHMARK_NAME,
+            "protocol_version": PROTOCOL_VERSION,
             "comparison": "Independent within-cohort participant-disjoint evaluation; models are not pooled across cohorts.",
             "cohorts": [mcphases_aggregate, utah_aggregate],
             "macro_scores": macro_scores,
@@ -230,7 +231,7 @@ def summarize_command(args: argparse.Namespace) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="mcPHASES CycleBench")
+    parser = argparse.ArgumentParser(description=BENCHMARK_NAME)
     parser.add_argument("--min-cycle-length", type=int, default=DEFAULT_MIN_CYCLE_LENGTH)
     parser.add_argument("--max-cycle-length", type=int, default=DEFAULT_MAX_CYCLE_LENGTH)
     parser.add_argument("--output-dir", default="results")

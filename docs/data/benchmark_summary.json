@@ -1,5 +1,5 @@
 {
-  "benchmark": "mcPHASES CycleBench",
+  "benchmark": "CycleLengthBench",
   "cohort_flow": {
     "eligibility_exclusions": {},
     "eligible_examples": 82,

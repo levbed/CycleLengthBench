@@ -1,8 +1,8 @@
 {
-  "benchmark": "mcPHASES CycleBench",
+  "benchmark": "CycleLengthBench",
   "cohorts": [
     {
-      "benchmark": "mcPHASES CycleBench",
+      "benchmark": "CycleLengthBench",
       "cohort_flow": {
         "eligibility_exclusions": {},
         "eligible_examples": 82,
@@ -799,7 +799,7 @@
       }
     },
     {
-      "benchmark": "mcPHASES CycleBench: Utah history replication",
+      "benchmark": "CycleLengthBench: Utah history replication",
       "cohort_flow": {
         "eligibility_exclusions": {
           "adjacent_row_transitions": 2743,

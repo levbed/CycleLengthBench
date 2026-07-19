@@ -16,7 +16,7 @@ class PublicArtifactTests(unittest.TestCase):
     def test_public_summary_is_aggregate_and_complete(self) -> None:
         payload = json.loads(PUBLIC_SUMMARY.read_text())
         assert_aggregate_payload_safe(payload)
-        self.assertEqual(payload["benchmark"], "mcPHASES CycleBench")
+        self.assertEqual(payload["benchmark"], "CycleLengthBench")
         self.assertEqual(payload["protocol_version"], "2.1")
         self.assertEqual(len(payload["scores"]), 20)
         serialized = json.dumps(payload).lower()

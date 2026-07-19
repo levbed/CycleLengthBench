@@ -6,6 +6,7 @@ import statistics
 from pathlib import Path
 from typing import Any
 
+from . import BENCHMARK_NAME, PROTOCOL_VERSION
 from .features import FeatureTable, feature_tracks
 
 
@@ -140,8 +141,8 @@ def build_benchmark_summary(
         )
 
     payload = {
-        "benchmark": str(summary.get("benchmark", "mcPHASES CycleBench")),
-        "protocol_version": "2.1",
+        "benchmark": str(summary.get("benchmark", BENCHMARK_NAME)),
+        "protocol_version": PROTOCOL_VERSION,
         "dataset": {
             "id": str(summary.get("dataset_id", "mcphases")),
             "version": str(summary.get("dataset_version", "unknown")),

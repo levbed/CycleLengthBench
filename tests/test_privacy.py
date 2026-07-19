@@ -63,7 +63,7 @@ class PrivacyTests(unittest.TestCase):
 
     def test_openai_summary_disables_storage_and_uses_aggregate_payload(self) -> None:
         client = _FakeClient()
-        payload = {"benchmark": "CycleBench", "scores": [{"track": "history_only", "mae": 3.0}]}
+        payload = {"benchmark": "CycleLengthBench", "scores": [{"track": "history_only", "mae": 3.0}]}
         result = summarize_with_openai(payload, client=client)
         self.assertEqual(result["request_id"], "req_test")
         self.assertIs(client.responses.arguments["store"], False)
@@ -71,13 +71,13 @@ class PrivacyTests(unittest.TestCase):
         self.assertNotIn("participant_id", client.responses.arguments["input"])
 
     def test_openai_summary_reports_incomplete_response_before_json_parsing(self) -> None:
-        payload = {"benchmark": "CycleBench"}
+        payload = {"benchmark": "CycleLengthBench"}
         client = _FakeSingleResponseClient(_FakeIncompleteResponse())
         with self.assertRaisesRegex(RuntimeError, "status=incomplete, reason=max_output_tokens"):
             summarize_with_openai(payload, client=client)
 
     def test_openai_summary_reports_malformed_structured_output(self) -> None:
-        payload = {"benchmark": "CycleBench"}
+        payload = {"benchmark": "CycleLengthBench"}
         client = _FakeSingleResponseClient(_FakeMalformedResponse())
         with self.assertRaisesRegex(RuntimeError, "malformed structured output.*req_malformed"):
             summarize_with_openai(payload, client=client)

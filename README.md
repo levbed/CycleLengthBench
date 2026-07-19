@@ -1,11 +1,12 @@
-# mcPHASES CycleBench
+# CycleLengthBench
 
-mcPHASES CycleBench is a participant-disjoint benchmark for next-cycle length
-forecasting. It tests whether hormone, wearable, symptom, glucose, or stress
-summaries improve prediction beyond simple menstrual-history baselines and
-whether nonlinear models change that conclusion. A larger, independent Utah
-cycle-length cohort tests whether the history-only comparison is reproducible
-outside mcPHASES without pooling incompatible cohorts.
+CycleLengthBench is a participant-disjoint benchmark for next-cycle length
+forecasting across independent longitudinal cohorts. It tests whether hormone,
+wearable, symptom, glucose, or stress summaries improve prediction beyond
+simple menstrual-history baselines and whether nonlinear models change that
+conclusion. A larger, independent Utah cycle-length cohort tests whether the
+history-only comparison is reproducible outside mcPHASES without pooling
+incompatible cohorts.
 
 The project is an exploratory research benchmark, not a clinical application.
 It is not intended for diagnosis, fertility planning, treatment, individual
@@ -30,7 +31,7 @@ https://physionet.org/content/mcphases/1.0.0/
 
 Each researcher must sign and follow the PhysioNet data-use agreement. This
 repository does not redistribute raw data or participant-level derived outputs.
-The MIT license applies to CycleBench code, not to mcPHASES data.
+The MIT license applies to CycleLengthBench code, not to mcPHASES data.
 
 The loader accepts a directory containing `hormones_and_selfreport.csv`, or a
 parent containing exactly one extracted release directory. It reads headers for

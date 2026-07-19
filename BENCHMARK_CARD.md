@@ -1,4 +1,4 @@
-# mcPHASES CycleBench Benchmark Card
+# CycleLengthBench Benchmark Card
 
 ## Research Question
 
